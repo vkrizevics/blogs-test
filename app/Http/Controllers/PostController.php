@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -21,7 +22,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        return view('posts.create');
     }
 
     /**
@@ -29,7 +34,19 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $post = new Post();
+
+        $post->fill($request->validated());
+
+        $post->user_id = $request->user()->id;
+
+        $post->save();
+
+        return redirect('posts/' . (int)$post->id);
     }
 
     /**
@@ -37,7 +54,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $author = $post->user;
+
+        return view('posts.show', compact(
+            'post',
+            'author'
+        ));
     }
 
     /**
