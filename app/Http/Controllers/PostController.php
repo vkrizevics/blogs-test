@@ -14,7 +14,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+
+        return view('posts.index', compact(
+            'posts',
+        ));
     }
 
     /**
@@ -54,11 +58,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $author = $post->user;
 
         return view('posts.show', compact(
-            'post',
-            'author'
+            'post'
         ));
     }
 
@@ -67,7 +69,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -75,7 +81,15 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $post->fill($request->validated());
+
+        $post->save();
+
+        return redirect('posts/' . (int)$post->id);
     }
 
     /**
