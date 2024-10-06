@@ -17,11 +17,18 @@
                     {!! nl2br(htmlspecialchars($post->content), false) !!}
                 </div>
                 @if (Auth::check() && $post->user->id = Auth::id())
-                    <div>
+                    <div class="flex items-center gap-4">
                         <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
-                           class="underline underline-offset-2 hover:text-sky-500">Edit</a>
+                           class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</a>
 
-                        <a href="#destroy" class="underline underline-offset-2 hover:text-sky-500"
+                        <a href="#destroy"
+                           class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                            onclick="document.getElementById('delete-form-{{$post->id}}').submit();">Delete</a>
 
                         <form id="delete-form-{{$post->id}}" method="post"
@@ -31,13 +38,9 @@
                         </form>
                     </div>
                 @endif
-
-                {{ count($post->comments) }} comments
-                @foreach($post->comments as $comment)
-                    <div>
-                        {{ $comment->content }}
-                    </div>
-                @endforeach
+                <div>
+                    @include('comments.partials.create-comment-form')
+                </div>
             </div>
         </div>
     </div>

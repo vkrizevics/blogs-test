@@ -20,6 +20,10 @@
                     </div>
                     @if (Auth::check() && $post->user->id = Auth::id())
                         <div>
+                            <a href="{{ route('posts.show', ['post' => $post->id]) }}"
+                               class="underline underline-offset-2 hover:text-sky-500">
+                                {{ $post->comments()->count() }} comments
+                            </a>
                             <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
                                class="underline underline-offset-2 hover:text-sky-500">Edit</a>
 
