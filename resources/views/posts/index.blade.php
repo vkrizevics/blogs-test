@@ -38,6 +38,9 @@
 
             @if ($loop->last)
                 <style>
+                    /**
+                        text-sky-500 color
+                     */
                     .custom-pagination span[aria-current="page"] span {
                         color: rgb(14, 165, 233) !important;
                     }
