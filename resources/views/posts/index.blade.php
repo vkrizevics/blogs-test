@@ -18,6 +18,10 @@
                     <div>
                         {!! nl2br(htmlspecialchars($post->content), false) !!}
                     </div>
+                    <div>
+                        <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
+                           class="underline underline-offset-2 hover:text-sky-500">Edit</a>
+                    </div>
                 </div>
             </div>
         </div>

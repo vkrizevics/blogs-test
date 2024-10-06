@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
@@ -67,9 +68,11 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
+    public function edit(Post $post, Request $request)
     {
         if (!Auth::check()) {
+            session(['redirect_after_auth' => $request->path()]);
+
             return redirect('login');
         }
 
@@ -82,6 +85,7 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         if (!Auth::check()) {
+
             return redirect('login');
         }
 
@@ -97,6 +101,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->trashed();
     }
 }

@@ -24,9 +24,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $redirect_after_auth = session('redirect_after_auth');
+
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        if ($redirect_after_auth) {
+
+            return redirect($redirect_after_auth);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

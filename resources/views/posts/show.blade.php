@@ -16,6 +16,12 @@
                 <div>
                     {!! nl2br(htmlspecialchars($post->content), false) !!}
                 </div>
+                @if (Auth::check() && $post->user->id = Auth::id())
+                    <div>
+                        <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
+                           class="underline underline-offset-2 hover:text-sky-500">Edit</a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
