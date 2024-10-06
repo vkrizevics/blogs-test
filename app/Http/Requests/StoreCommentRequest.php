@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 
-class StorePostRequest extends FormRequest
+class StoreCommentRequest extends FormRequest
 {
     use NoTags;
     /**
@@ -26,7 +26,6 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255',
             'content' => 'required|max:65000',
         ];
     }
@@ -34,9 +33,6 @@ class StorePostRequest extends FormRequest
     public function after()
     {
         return [
-            function (Validator $validator) {
-                $this->noTagsAllowed('title', $validator);
-            },
             function (Validator $validator) {
                 $this->noTagsAllowed('content', $validator);
             }
