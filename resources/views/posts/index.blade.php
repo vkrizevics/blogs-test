@@ -35,6 +35,21 @@
                     @endif
                 </div>
             </div>
+
+            @if ($loop->last)
+                <style>
+                    .custom-pagination span[aria-current="page"] span {
+                        color: rgb(14, 165, 233) !important;
+                    }
+
+                    .custom-pagination a:hover {
+                        color: rgb(14, 165, 233) !important;
+                    }
+                </style>
+                <div class="custom-pagination max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                    {{ $posts->links() }}
+                </div>
+            @endif
         </div>
 
     @endforeach
