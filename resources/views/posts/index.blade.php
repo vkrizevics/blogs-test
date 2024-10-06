@@ -18,12 +18,12 @@
                     <div>
                         {!! nl2br(htmlspecialchars($post->content), false) !!}
                     </div>
-                    @if (Auth::check() && $post->user->id = Auth::id())
-                        <div>
-                            <a href="{{ route('posts.show', ['post' => $post->id]) }}"
-                               class="underline underline-offset-2 hover:text-sky-500">
-                                {{ $post->comments()->count() }} comments
-                            </a>
+
+                    <div>
+                        <a href="{{ route('posts.show', ['post' => $post->id]) }}"
+                           class="underline underline-offset-2 hover:text-sky-500">{{ $post->comments()->count() }} comments</a>
+
+                        @if (Auth::check() && $post->user->id = Auth::id())
                             <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
                                class="underline underline-offset-2 hover:text-sky-500">Edit</a>
 
@@ -35,8 +35,8 @@
                                 @csrf
                                 @method('delete')
                             </form>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </div>
 
