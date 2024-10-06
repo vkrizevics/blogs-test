@@ -20,6 +20,15 @@
                     <div>
                         <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
                            class="underline underline-offset-2 hover:text-sky-500">Edit</a>
+
+                        <a href="#destroy" class="underline underline-offset-2 hover:text-sky-500"
+                           onclick="document.getElementById('delete-form-{{$post->id}}').submit();">Delete</a>
+
+                        <form id="delete-form-{{$post->id}}" method="post"
+                              action="{{ route('posts.destroy', ['post' => $post->id]) }}" class="hidden">
+                            @csrf
+                            @method('delete')
+                        </form>
                     </div>
                 @endif
             </div>

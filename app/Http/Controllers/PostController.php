@@ -101,6 +101,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->trashed();
+        $post->delete();
+
+        return redirect('posts');
     }
 }
