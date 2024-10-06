@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('posts', PostController::class);
+
+Route::resource('posts.comments', CommentController::class)->shallow()->except(['show']);
 
 require __DIR__.'/auth.php';
