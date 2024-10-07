@@ -39,6 +39,14 @@
                 @foreach($post->comments as $comment)
                     <div>
                         {{ $comment->content }}
+                        <a href="#destroy-comment" class="underline underline-offset-2 hover:text-sky-500 float-right"
+                           onclick="document.getElementById('delete-form-comment-{{$comment->id}}').submit();">X</a>
+
+                        <form id="delete-form-comment-{{$comment->id}}" method="post"
+                              action="{{ route('comments.destroy', ['comment' => $comment->id]) }}" class="hidden">
+                            @csrf
+                            @method('delete')
+                        </form>
                     </div>
                 @endforeach
             </div>
