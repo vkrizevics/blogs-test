@@ -19,14 +19,16 @@
 
                 <div>
                     {{ count($post->comments) }} comments
+                    <a href="{{ route('posts.comments.create', ['post' => $post->id]) }}"
+                       class="underline underline-offset-2 hover:text-sky-500">Add a comment</a>
 
                     @if (Auth::check() && $post->user->id = Auth::id())
 
                             <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
-                               class="underline underline-offset-2 hover:text-sky-500">Edit</a>
+                               class="underline underline-offset-2 hover:text-sky-500">Edit the post</a>
 
                             <a href="#destroy" class="underline underline-offset-2 hover:text-sky-500"
-                               onclick="document.getElementById('delete-form-{{$post->id}}').submit();">Delete</a>
+                               onclick="document.getElementById('delete-form-{{$post->id}}').submit();">Delete the post</a>
 
                             <form id="delete-form-{{$post->id}}" method="post"
                                   action="{{ route('posts.destroy', ['post' => $post->id]) }}" class="hidden">
