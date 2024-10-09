@@ -16,9 +16,16 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(2);
+        $posts = Post::paginate(2)->load('comments', 'user');
+        foreach ($posts as $post) {
+            $post->created_at_formatted = $post->getCreatedAtFormatted();
+            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+            $post->is_author = Auth::check() && $post->user->id = Auth::id();
+            $post->comment_link = route('posts.comments.create', ['post' => $post->id]);
+        }
+        $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Index', []);
+        return Inertia::render('Posts/Index', compact('auth_user', 'posts'));
     }
 
     /**
