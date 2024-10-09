@@ -16,8 +16,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(2)->load('comments', 'user');
-        foreach ($posts as $post) {
+        $posts = Post::orderBy('created_at', 'desc')
+            ->paginate(5)
+            ->load('comments', 'user');
+
+        foreach ($posts as $i => $post) {
+            $post->more_classes = '';
+
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
@@ -25,12 +30,16 @@ class PostController extends Controller
 
             $post->is_author = Auth::check() && $post->user->id = Auth::id();
 
+            $post->edit = route('posts.edit', ['post' => $post->id]);
+
             $post->delete_form_id = 'delete-form-' . (int)$post->id;
-            $post->delete_form_onclick = "document.getElementById('delete-form-" . (int)$post->id . "').submit();";
+            $post->delete_form_onclick = "event.preventDefault(); document.getElementById('delete-form-" . (int)$post->id . "').submit();";
             $post->destroy = route('posts.destroy', ['post' => $post->id]);
 
             $post->comment_link = route('posts.comments.create', ['post' => $post->id]);
         }
+
+        $posts[$i]->more_classes = 'pb-12';
 
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
