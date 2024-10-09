@@ -3,6 +3,10 @@ import PostsLayout from '@/Layouts/PostsLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
+    csrf_token: {
+        type: String,
+        required: true
+    },
     auth_user: {
         type: Boolean,
         required: true
@@ -42,8 +46,8 @@ defineProps({
                         </div>
 
                         <div>
-                            <a href="{{ route('posts.show', ['post' => $post->id]) }}"
-                               class="underline underline-offset-2 hover:text-sky-500">{{ post.comments.length }} comments</a>
+                            <Link :href="post.show_link"
+                               class="underline underline-offset-2 hover:text-sky-500">{{ post.comments.length }} comments</Link>
                         </div>
 
                         <div v-if="auth_user">
@@ -57,12 +61,12 @@ defineProps({
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                                   focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                               onclick="document.getElementById('delete-form-{{$post.id}}').submit();">Delete</a>
+                               :onclick="post.delete_form_onclick">Delete</a>
 
-                            <form v-if="post.is_author" id="delete-form-{{$post.id}}" method="post"
-                                  action="{{ route('posts.destroy', ['post' => $post.id]) }}" class="hidden">
-                                @csrf
-                                @method('delete')
+                            <form v-if="post.is_author" :id="post.delete_form_id" method="post"
+                                  :action="post.destroy" class="hidden">
+                                <input type="hidden" name="_token" :value="csrf_token">
+                                <input type="hidden" name="_method" value="DELETE">
                             </form>
 
                             <Link :href="post.comment_link"

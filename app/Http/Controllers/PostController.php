@@ -20,12 +20,22 @@ class PostController extends Controller
         foreach ($posts as $post) {
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+            $post->show_link = route('posts.show', ['post' => $post->id]);
+
             $post->is_author = Auth::check() && $post->user->id = Auth::id();
+
+            $post->delete_form_id = 'delete-form-' . (int)$post->id;
+            $post->delete_form_onclick = "document.getElementById('delete-form-" . (int)$post->id . "').submit();";
+            $post->destroy = route('posts.destroy', ['post' => $post->id]);
+
             $post->comment_link = route('posts.comments.create', ['post' => $post->id]);
         }
+
+        $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Index', compact('auth_user', 'posts'));
+        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts'));
     }
 
     /**
