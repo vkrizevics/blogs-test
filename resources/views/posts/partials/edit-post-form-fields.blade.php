@@ -7,7 +7,7 @@
 </div>
 
 <div>
-    <x-input-label for="content" :value="__('Contents')" />
+    <x-input-label for="content" :value="__('Content')" />
     <x-text-textarea id="content" name="content" type="content" class="mt-1 block w-full" required autocomplete="content"
                      :rows="7" :value="old('content', isset($post) ? $post->content : '')" />
     <x-input-error class="mt-2" :messages="$errors->get('content')" />
@@ -15,14 +15,4 @@
 
 <div class="flex items-center gap-4">
     <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-    @if (session('status') === 'profile-updated')
-        <p
-            x-data="{ show: true }"
-            x-show="show"
-            x-transition
-            x-init="setTimeout(() => show = false, 2000)"
-            class="text-sm text-gray-600"
-        >{{ __('Saved.') }}</p>
-    @endif
 </div>

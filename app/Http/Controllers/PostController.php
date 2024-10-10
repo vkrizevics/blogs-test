@@ -58,7 +58,11 @@ class PostController extends Controller
             return redirect('login');
         }
 
-        return view('posts.create');
+        $store_route = route('posts.store');
+        $csrf_token = csrf_token();
+        $auth_user = Auth::check();
+
+        return Inertia::render('Posts/Create', compact('store_route', 'csrf_token', 'auth_user'));
     }
 
     /**
