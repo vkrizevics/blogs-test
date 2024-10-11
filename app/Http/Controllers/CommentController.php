@@ -23,7 +23,7 @@ class CommentController extends Controller
      */
     public function create(Post $post)
     {
-        return view('comments.create', compact('post'));
+        return view('Comments/Create', compact('post'));
     }
 
     /**

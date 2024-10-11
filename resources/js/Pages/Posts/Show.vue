@@ -1,6 +1,6 @@
 <script setup>
 import PostsLayout from '@/Layouts/PostsLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({
     csrf_token: {
@@ -50,29 +50,23 @@ defineProps({
                     </div>
 
                     <div v-if="auth_user">
-                        <Link v-if="post.is_author" :href="post.edit"
-                           class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                              font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                              focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                              focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</Link>
+                        <Link v-if="post.is_author" :href="route('posts.edit', {post: post.id})"
+                              class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</Link>
 
-                        <a v-if="post.is_author" href="#destroy" class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                              font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                              focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                              focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                           :onclick="post.delete_form_onclick">Delete</a>
+                        <Link v-if="post.is_author" href="#destroy" class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                              @click.prevent="router.delete(route('posts.destroy', {post: post.id}), {_token: $page.props.csrf_token});">Delete</Link>
 
-                        <form v-if="post.is_author" :id="post.delete_form_id" method="post"
-                              :action="post.destroy" class="hidden">
-                            <input type="hidden" name="_token" :value="csrf_token">
-                            <input type="hidden" name="_method" value="DELETE">
-                        </form>
-
-                        <Link :href="post.comment_link"
-                           class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                              font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                              focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                              focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Comment</Link>
+                        <Link :href="route('posts.comments.create', {post: post.id})"
+                              class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Comment</Link>
                     </div>
 
                     <div v-for="comment in post.comments">
@@ -83,13 +77,7 @@ defineProps({
                               font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                               focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                               focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 float-right"
-                           :onclick="comment.delete_form_onclick">X</a>
-
-                        <form v-if="comment.is_author" :id="comment.delete_form_id" method="post"
-                              :action="comment.destroy" class="hidden">
-                            <input type="hidden" name="_token" :value="csrf_token">
-                            <input type="hidden" name="_method" value="DELETE">
-                        </form>
+                           @click.prevent="router.delete(route('comments.destroy', {comment: comment.id}), {_token: $page.props.csrf_token});">X</a>
                     </div>
                 </div>
             </div>

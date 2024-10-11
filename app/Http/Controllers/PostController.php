@@ -27,17 +27,8 @@ class PostController extends Controller
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-            $post->show_link = route('posts.show', ['post' => $post->id]);
+            $post->is_author = Auth::check() && $post->user->id === Auth::id();
 
-            $post->is_author = Auth::check() && $post->user->id = Auth::id();
-
-            $post->edit = route('posts.edit', ['post' => $post->id]);
-
-            $post->delete_form_id = 'delete-form-' . (int)$post->id;
-            $post->delete_form_onclick = "event.preventDefault(); document.getElementById('delete-form-" . (int)$post->id . "').submit();";
-            $post->destroy = route('posts.destroy', ['post' => $post->id]);
-
-            $post->comment_link = route('posts.comments.create', ['post' => $post->id]);
             if ($i === $posts_count - 1) {
                 $posts->more_classes = 'pb-12';
             }
@@ -60,11 +51,10 @@ class PostController extends Controller
             return redirect('login');
         }
 
-        $store_route = route('posts.store');
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Create', compact('store_route', 'csrf_token', 'auth_user'));
+        return Inertia::render('Posts/Create', compact('csrf_token', 'auth_user'));
     }
 
     /**
@@ -97,27 +87,13 @@ class PostController extends Controller
         $post->created_at_formatted = $post->getCreatedAtFormatted();
         $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-        $post->show_link = route('posts.show', ['post' => $post->id]);
-
         $post->is_author = Auth::check() && $post->user->id = Auth::id();
-
-        $post->edit = route('posts.edit', ['post' => $post->id]);
-
-        $post->delete_form_id = 'delete-form-comment-' . (int)$post->id;
-        $post->delete_form_onclick = "event.preventDefault(); document.getElementById('delete-form-comment-" . (int)$post->id . "').submit();";
-        $post->destroy = route('posts.destroy', ['post' => $post->id]);
-
-        $post->comment_link = route('posts.comments.create', ['post' => $post->id]);
 
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
         foreach ($post->comments as $comment) {
             $comment->is_author = Auth::check() && $comment->user->id = Auth::id();
-
-            $comment->delete_form_id = 'delete-form-comment-' . (int)$comment->id;
-            $comment->delete_form_onclick = "event.preventDefault(); document.getElementById('delete-form-comment-" . (int)$comment->id ."').submit();";
-            $comment->destroy = route('comments.destroy', ['comment' => $comment->id]);
         }
 
         return Inertia::render('Posts/Show', compact('csrf_token', 'auth_user', 'post'));
