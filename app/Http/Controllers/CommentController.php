@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class CommentController extends Controller
 {
@@ -23,7 +24,17 @@ class CommentController extends Controller
      */
     public function create(Post $post)
     {
-        return view('Comments/Create', compact('post'));
+        $post->load(['comments', 'user']);
+
+        $post->created_at_formatted = $post->getCreatedAtFormatted();
+        $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+        $post->is_author = Auth::check() && $post->user->id = Auth::id();
+
+        $csrf_token = csrf_token();
+        $auth_user = Auth::check();
+
+        return Inertia::render('Comments/Create', compact('csrf_token','auth_user', 'post'));
     }
 
     /**

@@ -1,16 +1,11 @@
 <script setup>
-import {Head, Link, useForm} from '@inertiajs/vue3';
+import {Head, Link, router, useForm} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 
 defineProps({
-    store_route: {
-        type: String,
-        required: true
-    },
     csrf_token: {
         type: String,
         required: true
@@ -19,14 +14,13 @@ defineProps({
         type: Boolean,
         required: true
     },
-    method: {
-        type: String,
-        required: false
+    post: {
+        type: Object,
+        required: true
     }
 });
 
 const form = useForm({
-    title: '',
     content: ''
 });
 </script>
@@ -62,57 +56,30 @@ const form = useForm({
                         {{ post.comments.length }} comments
                     </div>
 
-                    @if (Auth::check() && $post->user->id = Auth::id())
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
-                           class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                    <div v-if="auth_user">
+                        <Link v-if="post.is_author" :href="route('posts.edit', {post: post.id})"
+                              class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</a>
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</Link>
 
-                        <a href="#destroy"
-                           class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                        <Link v-if="post.is_author" href="#destroy" class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                                   focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                           onclick="document.getElementById('delete-form-{{$post->id}}').submit();">Delete</a>
+                              @click.prevent="router.delete(route('posts.destroy', {post: post.id}), {_token: $page.props.csrf_token});">Delete</Link>
 
-                        <form id="delete-form-{{$post->id}}" method="post"
-                              action="{{ route('posts.destroy', ['post' => $post->id]) }}" class="hidden">
-                            @csrf
-                            @method('delete')
-                        </form>
+                        <Link :href="route('posts.comments.create', {post: post.id})"
+                              class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Comment</Link>
                     </div>
-                    @endif
-                    <div>
-                        @include('comments.partials.create-comment-form')
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div>
                         <section>
-                            <form @submit.prevent="form.post(route('posts.store'))">
+                            <form @submit.prevent="form.post(route('posts.comments.store', {post: post.id}))">
                                 <input type="hidden" name="_token" :value="csrf_token">
-                                <input type="hidden" name="_method" v-if="method" :method="method">
-
-                                <div>
-                                    <InputLabel for="title" value="Title" />
-                                    <TextInput
-                                        id="title"
-                                        type="text"
-                                        class="mt-1 block w-full"
-                                        v-model="form.title"
-                                        required
-                                        autocomplete="title"
-                                        autofocus
-                                    />
-                                    <InputError class="mt-2" :message="form.errors.title" />
-                                </div>
 
                                 <div>
                                     <InputLabel for="content" value="Content" />
