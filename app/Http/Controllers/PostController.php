@@ -136,9 +136,8 @@ class PostController extends Controller
 
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
-        $method = 'PATCH';
 
-        return Inertia::render('Posts/Create', compact('post','csrf_token', 'auth_user', 'method'));
+        return Inertia::render('Posts/Edit', compact('post','csrf_token', 'auth_user'));
     }
 
     /**

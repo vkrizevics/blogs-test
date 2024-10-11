@@ -6,7 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
-defineProps({
+const props = defineProps({
     post: {
         type: Object,
         required: true
@@ -18,16 +18,12 @@ defineProps({
     auth_user: {
         type: Boolean,
         required: true
-    },
-    method: {
-        type: String,
-        required: false
     }
 });
 
 const form = useForm({
-    title: post.title,
-    content: post.comment
+    title: props.post.title,
+    content: props.post.content
 });
 </script>
 
@@ -48,9 +44,8 @@ const form = useForm({
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div>
                         <section>
-                            <form @submit.prevent="form.post(route('posts.update'))">
+                            <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))">
                                 <input type="hidden" name="_token" :value="csrf_token">
-                                <input type="hidden" name="_method" v-if="method" :method="method">
 
                                 <div>
                                     <InputLabel for="title" value="Title" />
