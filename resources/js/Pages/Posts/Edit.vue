@@ -44,7 +44,7 @@ const form = useForm({
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div>
                         <section>
-                            <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))">
+                            <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
 
                                 <div>
