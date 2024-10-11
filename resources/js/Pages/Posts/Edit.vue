@@ -7,8 +7,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 defineProps({
-    store_route: {
-        type: String,
+    post: {
+        type: Object,
         required: true
     },
     csrf_token: {
@@ -26,8 +26,8 @@ defineProps({
 });
 
 const form = useForm({
-    title: '',
-    content: ''
+    title: post.title,
+    content: post.comment
 });
 </script>
 
@@ -48,7 +48,7 @@ const form = useForm({
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div>
                         <section>
-                            <form @submit.prevent="form.post(route('posts.store'))">
+                            <form @submit.prevent="form.post(route('posts.update'))">
                                 <input type="hidden" name="_token" :value="csrf_token">
                                 <input type="hidden" name="_method" v-if="method" :method="method">
 

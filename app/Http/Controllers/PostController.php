@@ -52,9 +52,11 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         if (!Auth::check()) {
+            session(['redirect_after_auth' => $request->path()]);
+
             return redirect('login');
         }
 
@@ -119,10 +121,6 @@ class PostController extends Controller
         }
 
         return Inertia::render('Posts/Show', compact('csrf_token', 'auth_user', 'post'));
-//
-//        return view('posts.show', compact(
-//            'post'
-//        ));
     }
 
     /**
@@ -136,7 +134,11 @@ class PostController extends Controller
             return redirect('login');
         }
 
-        return view('posts.edit', compact('post'));
+        $csrf_token = csrf_token();
+        $auth_user = Auth::check();
+        $method = 'PATCH';
+
+        return Inertia::render('Posts/Create', compact('post','csrf_token', 'auth_user', 'method'));
     }
 
     /**

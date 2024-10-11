@@ -52,7 +52,7 @@ defineProps({
                         </div>
 
                         <div v-if="auth_user">
-                            <Link v-if="post.is_author" href="post.edit"
+                            <Link v-if="post.is_author" :href="post.edit"
                                class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
