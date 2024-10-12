@@ -24,6 +24,7 @@ const props = defineProps({
 });
 
 const editingCategories = ref(false);
+const categoryNameInput = ref(null);
 
 const form = useForm({
     title: props.post.title,
@@ -37,19 +38,26 @@ const formCategory = useForm({
 const editCategories = () => {
     editingCategories.value = true;
 
-    // nextTick(() => passwordInput.value.focus());
+    nextTick(() => categoryNameInput.value.focus());
+};
+
+const closeModal = () => {
+    editingCategories.value = false;
+
+    formCategory.clearErrors();
+    formCategory.reset();
 };
 </script>
 
 <template>
-    <Head title="New Post" />
+    <Head title="Editing Post" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
             >
-                Creating New Post
+                Editing Post
             </h2>
         </template>
 
@@ -104,10 +112,10 @@ const editCategories = () => {
                                             Saved.
                                         </p>
                                     </Transition>
+
+                                    <PrimaryButton @click.prevent="editCategories">Categories</PrimaryButton>
                                 </div>
                             </form>
-
-                            <PrimaryButton @click="editCategories">Categories</PrimaryButton>
 
                             <Modal :show="editingCategories" @close="closeModal">
                                 <div class="p-6">
@@ -115,6 +123,7 @@ const editCategories = () => {
                                         <InputLabel for="name" value="Category" />
                                         <TextInput
                                             id="name"
+                                            ref="categoryNameInput"
                                             type="text"
                                             class="mt-1 block w-full"
                                             v-model="formCategory.name"
