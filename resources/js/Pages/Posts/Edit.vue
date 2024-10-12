@@ -3,8 +3,10 @@ import {Head, Link, useForm} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {nextTick, ref} from "vue";
 
 const props = defineProps({
     post: {
@@ -21,10 +23,22 @@ const props = defineProps({
     }
 });
 
+const editingCategories = ref(false);
+
 const form = useForm({
     title: props.post.title,
     content: props.post.content
 });
+
+const formCategory = useForm({
+    name: ''
+});
+
+const editCategories = () => {
+    editingCategories.value = true;
+
+    // nextTick(() => passwordInput.value.focus());
+};
 </script>
 
 <template>
@@ -92,6 +106,43 @@ const form = useForm({
                                     </Transition>
                                 </div>
                             </form>
+
+                            <PrimaryButton @click="editCategories">Categories</PrimaryButton>
+
+                            <Modal :show="editingCategories" @close="closeModal">
+                                <div class="p-6">
+                                    <div class="mt-6">
+                                        <InputLabel for="name" value="Category" />
+                                        <TextInput
+                                            id="name"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            v-model="formCategory.name"
+                                            required
+                                            autocomplete="category"
+                                            autofocus
+                                        />
+
+                                        <InputError :message="formCategory.errors.name" class="mt-2" />
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end">
+                                        <!--<SecondaryButton @click="closeModal">
+                                            Cancel
+                                        </SecondaryButton>
+
+                                        <DangerButton
+                                            class="ms-3"
+                                            :class="{ 'opacity-25': form.processing }"
+                                            :disabled="form.processing"
+                                            @click="deleteUser"
+                                        >
+                                            Delete Account
+                                        </DangerButton>-->
+                                    </div>
+                                </div>
+                            </Modal>
+
                         </section>
                     </div>
                 </div>
