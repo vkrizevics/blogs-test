@@ -27,6 +27,9 @@ const props = defineProps({
 const editingCategories = ref(false);
 const categoryNameInput = ref(null);
 
+const value = ref(null);
+const items = ref(['Germany', 'Holland', 'Ireland']);
+
 const form = useForm({
     title: props.post.title,
     content: props.post.content
@@ -47,6 +50,12 @@ const closeModal = () => {
 
     formCategory.clearErrors();
     formCategory.reset();
+};
+
+const search = (e) => {
+    return value.value = items.value.filter((country) => {
+        return country.toLowerCase().startsWith(e.query.toLowerCase())
+    })
 };
 </script>
 
@@ -70,7 +79,8 @@ const closeModal = () => {
                             <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
 
-                                <AutoComplete v-model="value" :suggestions="items" @complete="search" />
+                                <AutoComplete v-model="value" :suggestions="items" @complete="search"
+                                               class="mt-1 block w-full *:mt-1 *:block *:w-full *:rounded-md *:border-gray-300 *:shadow-sm *:focus:border-indigo-500 *:focus:ring-indigo-500" />
 
                                 <div>
                                     <InputLabel for="title" value="Title" />
