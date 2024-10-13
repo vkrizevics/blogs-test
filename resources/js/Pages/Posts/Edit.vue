@@ -27,8 +27,9 @@ const props = defineProps({
 const editingCategories = ref(false);
 const categoryNameInput = ref(null);
 
+let itemsArr = ['Germany', 'Holland', 'Iceland', 'Ireland'];
 const value = ref(null);
-const items = ref(['Germany', 'Holland', 'Ireland']);
+const items = ref(itemsArr);
 
 const form = useForm({
     title: props.post.title,
@@ -53,9 +54,17 @@ const closeModal = () => {
 };
 
 const search = (e) => {
-    return value.value = items.value.filter((country) => {
-        return country.toLowerCase().startsWith(e.query.toLowerCase())
-    })
+    axios.get('/categories')
+        .then((ee) => {
+            items.value = itemsArr.filter((country) => {
+                return country.toLowerCase().startsWith(e.query.toLowerCase())
+            });
+        })
+        .catch((ee) => {
+            items.value = itemsArr.filter((country) => {
+                return country.toLowerCase().startsWith(e.query.toLowerCase())
+            });
+        });
 };
 </script>
 
@@ -79,8 +88,12 @@ const search = (e) => {
                             <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
 
-                                <AutoComplete v-model="value" :suggestions="items" @complete="search"
-                                               class="mt-1 block w-full *:mt-1 *:block *:w-full *:rounded-md *:border-gray-300 *:shadow-sm *:focus:border-indigo-500 *:focus:ring-indigo-500" />
+                                <AutoComplete v-model="value" multiple :suggestions="items" @complete="search"
+                                              class="mt-1 block w-full">
+                                    <template #chip>
+
+                                    </template>
+                                </AutoComplete>
 
                                 <div>
                                     <InputLabel for="title" value="Title" />
@@ -172,3 +185,21 @@ const search = (e) => {
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style>
+
+.p-autocomplete-input-chip input[type="text"] {
+    @apply my-1;
+    @apply mx-1;
+    @apply block;
+    @apply w-full;
+    @apply rounded-md;
+    @apply border-gray-300;
+    @apply shadow-sm;
+    @apply focus:border-indigo-500;
+    @apply focus:ring-indigo-500;
+}
+/**
+ *:mt-1 *:block *:w-full *:rounded-md *:border-gray-300 *:shadow-sm focus:*:border-indigo-500 focus:*:ring-indigo-500
+ */
+</style>
