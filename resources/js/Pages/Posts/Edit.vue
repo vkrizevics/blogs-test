@@ -1,6 +1,7 @@
 <script setup>
 import {Head, Link, useForm} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import AutoComplete from 'primevue/autocomplete';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
@@ -68,6 +69,8 @@ const closeModal = () => {
                         <section>
                             <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
+
+                                <AutoComplete v-model="value" :suggestions="items" @complete="search" />
 
                                 <div>
                                     <InputLabel for="title" value="Title" />
