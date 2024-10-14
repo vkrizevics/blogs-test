@@ -7,7 +7,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import {nextTick, ref} from "vue";
+import {nextTick, ref, useTemplateRef} from "vue";
 
 const props = defineProps({
     post: {
@@ -27,7 +27,7 @@ const props = defineProps({
 const editingCategories = ref(false);
 const categoryNameInput = ref(null);
 
-let itemsArr = ['Germany', 'Holland', 'Iceland', 'Ireland'];
+let itemsArr = ['germany', 'holland', 'iceland', 'ireland'];
 const value = ref(null);
 const items = ref(itemsArr);
 
@@ -35,6 +35,8 @@ const form = useForm({
     title: props.post.title,
     content: props.post.content
 });
+
+const categories = useTemplateRef('categories');
 
 const formCategory = useForm({
     name: ''
@@ -54,18 +56,47 @@ const closeModal = () => {
 };
 
 const search = (e) => {
-    axios.get('/categories')
-        .then((ee) => {
-            items.value = itemsArr.filter((country) => {
-                return country.toLowerCase().startsWith(e.query.toLowerCase())
-            });
-        })
-        .catch((ee) => {
-            items.value = itemsArr.filter((country) => {
-                return country.toLowerCase().startsWith(e.query.toLowerCase())
-            });
-        });
+    items.value = itemsArr.filter((country) => {
+        return country.toLowerCase().startsWith(e.query.toLowerCase())
+    });
+
+    // axios.get('/categories')
+    //     .then((ee) => {
+    //     })
+    //     .catch((ee) => {
+    //     });
 };
+
+const itemsIncludes = () => {
+    const inputValue = document.getElementsByClassName('categories-autocomplete')[0]
+        .getElementsByTagName('input')[0]
+        .value;
+
+    return itemsArr.includes(inputValue.toLowerCase());
+};
+
+const addCategory = () => {
+    const categoriesInput = document.getElementById('categoriesInput');
+    const inputValueLower = categoriesInput.value.toLowerCase();
+
+    if (!itemsArr.includes(inputValueLower)) {
+        itemsArr.push(inputValueLower);
+        itemsArr.sort();
+    }
+
+    items.value = itemsArr;
+
+    let valueArr = value.value ?? [];
+
+    if (!valueArr.includes(inputValueLower)) {
+        valueArr.push(inputValueLower);
+    }
+
+    value.value = valueArr;
+
+    categories.value.overlayVisible = false;
+    categoriesInput.value = '';
+}
 </script>
 
 <template>
@@ -88,17 +119,24 @@ const search = (e) => {
                             <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
 
-                                <AutoComplete v-model="value" multiple :suggestions="items" @complete="search"
-                                              class="mt-1 block w-full">
-                                    <template #chip>
-
-                                    </template>
-                                </AutoComplete>
+                                <div class="categories-autocomplete">
+                                    <InputLabel for="categories" value="Categories" />
+                                    <AutoComplete v-model="value" multiple :suggestions="items" @complete="search" ref="categories" inputId="categoriesInput"
+                                                  class="block w-full">
+                                        <template #footer>
+                                            <div class="px-3 py-3">
+                                                <PrimaryButton :v-show="itemsIncludes" @click.prevent="addCategory">&#128930; Add New</PrimaryButton>
+                                            </div>
+                                        </template>
+                                    </AutoComplete>
+                                    <InputError class="mt-2" :message="form.errors.categories" />
+                                </div>
 
                                 <div>
                                     <InputLabel for="title" value="Title" />
                                     <TextInput
                                         id="title"
+                                        ref="titleInput"
                                         type="text"
                                         class="mt-1 block w-full"
                                         v-model="form.title"
@@ -188,7 +226,7 @@ const search = (e) => {
 
 <style>
 
-.p-autocomplete-input-chip input[type="text"] {
+#categoriesInput {
     @apply my-1;
     @apply mx-1;
     @apply block;
@@ -199,7 +237,4 @@ const search = (e) => {
     @apply focus:border-indigo-500;
     @apply focus:ring-indigo-500;
 }
-/**
- *:mt-1 *:block *:w-full *:rounded-md *:border-gray-300 *:shadow-sm focus:*:border-indigo-500 focus:*:ring-indigo-500
- */
 </style>
