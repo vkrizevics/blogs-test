@@ -15,12 +15,14 @@ class CategoryController extends Controller
      */
     public function search(?string $categoryNameFragment)
     {
-        return Category::where(
+        return Category::select('name')
+            ->where(
                 'name',
                 'like',
                 addslashes(mb_strtolower($categoryNameFragment)) . '%'
             )
-            ->get();
+            ->orderBy('name')
+            ->pluck('name');
     }
 
     /**
@@ -44,7 +46,20 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        $category_is_stored = Category::where('name', $request->name)
+            ->exists();
+
+        if (!$category_is_stored) {
+            $cat = new Category();
+            $cat->fill($request->all());
+            $success = $cat->save();
+            $error = !$success ? 'Cannot store in DB' : '';
+        } else {
+            $success = false;
+            $error = 'Already exists';
+        }
+
+        return compact('success', 'error');
     }
 
     /**

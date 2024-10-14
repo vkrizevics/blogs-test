@@ -56,6 +56,16 @@ const addCategory = () => {
     const categoriesInput = document.getElementById('categoriesInput');
     const inputValueLower = categoriesInput.value.toLowerCase();
 
+    axios.post('/categories/', {
+            name: inputValueLower,
+        })
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((data) => {
+            console.log(data)
+        });
+
     if (!itemsArr.includes(inputValueLower)) {
         itemsArr.push(inputValueLower);
         itemsArr.sort();

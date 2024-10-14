@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -26,8 +27,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('posts', PostController::class);
+Route::resource('posts', PostController::class)->middleware(['auth', 'verified']);
 
-Route::resource('posts.comments', CommentController::class)->shallow()->except(['show']);
+Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
+
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified']);
+
+Route::get('categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
 require __DIR__.'/auth.php';
