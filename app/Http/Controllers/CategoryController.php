@@ -9,6 +9,21 @@ use App\Http\Requests\UpdateCategoryRequest;
 class CategoryController extends Controller
 {
     /**
+     * Get autocompletion variants for a category fragment
+     * @param string|null $categoryName
+     * @return void
+     */
+    public function search(?string $categoryNameFragment)
+    {
+        return Category::where(
+                'name',
+                'like',
+                addslashes(mb_strtolower($categoryNameFragment)) . '%'
+            )
+            ->get();
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

@@ -35,15 +35,13 @@ const form = useForm({
 const categories = useTemplateRef('categories');
 
 const search = (e) => {
-    items.value = itemsArr.filter((country) => {
-        return country.toLowerCase().startsWith(e.query.toLowerCase())
-    });
+    const request = new XMLHttpRequest();
+    request.open("GET", '/categories/search/' + encodeURI(e.query.toLowerCase()), false); // `false` makes the request synchronous
+    request.send(null);
 
-    // axios.get('/categories')
-    //     .then((ee) => {
-    //     })
-    //     .catch((ee) => {
-    //     });
+    if (request.status === 200) {
+        items.value = JSON.parse(request.responseText);
+    }
 };
 
 const itemsIncludes = () => {
