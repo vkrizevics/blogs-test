@@ -46,6 +46,11 @@ defineProps({
                     <div v-html="post.escaped_content"></div>
 
                     <div>
+                            <span v-for="category in post.categories"
+                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">{{ category.name }}</span>
+                    </div>
+
+                    <div>
                         {{ post.comments.length }} comments
                     </div>
 

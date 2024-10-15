@@ -19,7 +19,7 @@ class PostController extends Controller
     {
         $posts = Post::orderBy('created_at', 'desc')
             ->paginate(5)
-            ->load('comments', 'user');
+            ->load('comments', 'user', 'categories');
 
         $posts_count = count($posts);
         foreach ($posts as $i => $post) {
@@ -83,7 +83,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['comments', 'user']);
+        $post->load(['comments', 'user', 'categories']);
 
         $post->created_at_formatted = $post->getCreatedAtFormatted();
         $post->escaped_content = nl2br(htmlspecialchars($post->content), false);

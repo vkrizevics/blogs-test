@@ -47,6 +47,11 @@ defineProps({
                         <div v-html="post.escaped_content"></div>
 
                         <div>
+                            <span v-for="category in post.categories"
+                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">{{ category.name }}</span>
+                        </div>
+
+                        <div>
                             <Link :href="route('posts.show', {post: post.id})"
                                class="underline underline-offset-2 hover:text-sky-500">{{ post.comments.length }} comments</Link>
                         </div>

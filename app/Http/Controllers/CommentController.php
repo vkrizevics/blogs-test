@@ -24,7 +24,7 @@ class CommentController extends Controller
      */
     public function create(Post $post)
     {
-        $post->load(['comments', 'user']);
+        $post->load(['comments', 'user', 'categories']);
 
         $post->created_at_formatted = $post->getCreatedAtFormatted();
         $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
