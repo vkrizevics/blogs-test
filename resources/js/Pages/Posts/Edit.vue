@@ -13,10 +13,6 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    csrf_token: {
-        type: String,
-        required: true
-    },
     auth_user: {
         type: Boolean,
         required: true
@@ -113,8 +109,6 @@ const formPatch = () => {
                     <div>
                         <section>
                             <form @submit.prevent="formPatch" class="space-y-6">
-                                <input type="hidden" name="_token" :value="csrf_token">
-
                                 <div class="categories-autocomplete">
                                     <InputLabel for="categories" value="Categories" />
                                     <AutoComplete v-model="categoriesSelected" multiple :suggestions="categoriesFound" @complete="searchCategories"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -110,10 +111,9 @@ class PostController extends Controller
             return redirect('login');
         }
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Edit', compact('post','csrf_token', 'auth_user'));
+        return Inertia::render('Posts/Edit', compact('post', 'auth_user'));
     }
 
     /**
@@ -129,6 +129,28 @@ class PostController extends Controller
         $post->fill($request->validated());
 
         $post->save();
+
+        $categoryNames = $request->input('categories', []);
+
+        $categoryIds = [];
+        foreach ($categoryNames as $categoryName) {
+            $category = Category::where('name', $categoryName)
+                ->get()
+                ->first();
+
+            if (!$category) {
+                $category = new Category();
+                $category->name = $categoryName;
+
+                if (!$category->save()) {
+                    continue;
+                }
+            }
+
+            $categoryIds[] = $category->id;
+        }
+
+        $post->categories()->sync($categoryIds);
 
         return redirect('posts/' . (int)$post->id);
     }
