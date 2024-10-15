@@ -23,9 +23,9 @@ const props = defineProps({
     }
 });
 
-let itemsArr = ['germany', 'holland', 'iceland', 'ireland'];
-const value = ref(null);
-const items = ref(itemsArr);
+let categoriesFoundArr = [];
+const categoriesSelected = ref(null);
+const categoriesFound = ref(categoriesFoundArr);
 
 const form = useForm({
     title: props.post.title,
@@ -34,22 +34,21 @@ const form = useForm({
 
 const categories = useTemplateRef('categories');
 
-const search = (e) => {
+const searchCategories = (e) => {
     const request = new XMLHttpRequest();
-    request.open("GET", '/categories/search/' + encodeURI(e.query.toLowerCase()), false); // `false` makes the request synchronous
+    request.open("GET", '/categories/search/' + encodeURI(e.query.toLowerCase()), false);
     request.send(null);
 
     if (request.status === 200) {
-        items.value = JSON.parse(request.responseText);
+        categoriesFoundArr = JSON.parse(request.responseText);
+        categoriesFound.value = categoriesFoundArr;
     }
 };
 
-const itemsIncludes = () => {
-    const inputValue = document.getElementsByClassName('categories-autocomplete')[0]
-        .getElementsByTagName('input')[0]
-        .value;
+const categoriesIncludes = () => {
+    const inputValue = document.getElementById('categoriesInput').value;
 
-    return itemsArr.includes(inputValue.toLowerCase());
+    return categoriesFoundArr.includes(inputValue.toLowerCase());
 };
 
 const addCategory = () => {
@@ -66,23 +65,33 @@ const addCategory = () => {
             console.log(data)
         });
 
-    if (!itemsArr.includes(inputValueLower)) {
-        itemsArr.push(inputValueLower);
-        itemsArr.sort();
+    if (!categoriesFoundArr.includes(inputValueLower)) {
+        categoriesFoundArr.push(inputValueLower);
+        categoriesFoundArr.sort();
     }
 
-    items.value = itemsArr;
+    categoriesFound.value = categoriesFoundArr;
 
-    let valueArr = value.value ?? [];
+    let categoriesArr = categoriesSelected.value ?? [];
 
-    if (!valueArr.includes(inputValueLower)) {
-        valueArr.push(inputValueLower);
+    if (!categoriesArr.includes(inputValueLower)) {
+        categoriesArr.push(inputValueLower);
     }
 
-    value.value = valueArr;
+    categoriesSelected.value = categoriesArr;
 
     categories.value.overlayVisible = false;
     categoriesInput.value = '';
+}
+
+const formPatch = () => {
+    form.transform((data) => ({
+            ...data,
+            categories: categoriesSelected.value
+        }))
+        .patch(
+            route('posts.update', {post: props.post.id})
+        );
 }
 </script>
 
@@ -103,16 +112,16 @@ const addCategory = () => {
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div>
                         <section>
-                            <form @submit.prevent="form.patch(route('posts.update', {post: post.id}))" class="space-y-6">
+                            <form @submit.prevent="formPatch" class="space-y-6">
                                 <input type="hidden" name="_token" :value="csrf_token">
 
                                 <div class="categories-autocomplete">
                                     <InputLabel for="categories" value="Categories" />
-                                    <AutoComplete v-model="value" multiple :suggestions="items" @complete="search" ref="categories" inputId="categoriesInput"
-                                                  class="block w-full">
+                                    <AutoComplete v-model="categoriesSelected" multiple :suggestions="categoriesFound" @complete="searchCategories"
+                                                  ref="categories" inputId="categoriesInput" class="block w-full">
                                         <template #footer>
                                             <div class="px-3 py-3">
-                                                <PrimaryButton :v-show="itemsIncludes" @click.prevent="addCategory">&#128930; Add New</PrimaryButton>
+                                                <PrimaryButton :v-show="categoriesIncludes" @click.prevent="addCategory">&#128930; Add New</PrimaryButton>
                                             </div>
                                         </template>
                                     </AutoComplete>
