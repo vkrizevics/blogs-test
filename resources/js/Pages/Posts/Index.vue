@@ -1,6 +1,8 @@
 <script setup>
+import Paginator from 'primevue/paginator';
 import PostsLayout from '@/Layouts/PostsLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { useTemplateRef } from 'vue';
 
 defineProps({
     csrf_token: {
@@ -16,6 +18,8 @@ defineProps({
         required: true
     }
 });
+
+const first = useTemplateRef(0);
 </script>
 
 <template>
@@ -29,6 +33,9 @@ defineProps({
                 Recent Posts
             </h2>
         </template>
+
+        <Paginator v-model:first="first" :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"
+                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" />
 
         <template v-for="post in posts">
             <div class="pt-12" :class="post.more_classes">
@@ -82,3 +89,54 @@ defineProps({
         </template>
     </GuestLayout>
 </template>
+<style>
+
+.p-paginator-page {
+    @apply w-10;
+    @apply h-10;
+    @apply bg-indigo-100;
+    @apply transition-colors;
+    @apply duration-150;
+    @apply text-indigo-600;
+    @apply rounded-full;
+    @apply font-semibold;
+    @apply text-sm;
+    @apply hover:bg-indigo-100;
+}
+
+.p-paginator-page-selected {
+    @apply w-10;
+    @apply h-10;
+    @apply rounded-full;
+    @apply bg-gray-800;
+    @apply border;
+    @apply border-transparent;
+    @apply font-semibold;
+    @apply text-sm;
+    @apply text-white;
+    @apply uppercase;
+    @apply tracking-widest;
+    @apply hover:bg-gray-700;
+    @apply focus:bg-gray-700;
+    @apply active:bg-gray-900;
+    @apply focus:outline-none;
+    @apply focus:ring-2;
+    @apply focus:ring-indigo-500;
+    @apply focus:ring-offset-2;
+    @apply transition;
+    @apply ease-in-out;
+    @apply duration-150;
+}
+
+.p-paginator-content .p-disabled {
+    @apply w-10;
+    @apply h-10;
+    @apply text-indigo-600;
+    @apply transition-colors;
+    @apply duration-150;
+    @apply bg-white;
+    @apply rounded-full;
+    @apply hover:bg-indigo-100;
+}
+
+</style>
