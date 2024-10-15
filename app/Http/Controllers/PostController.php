@@ -113,7 +113,13 @@ class PostController extends Controller
 
         $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Edit', compact('post', 'auth_user'));
+        $post->load('categories');
+
+        $categories = $post->categories()
+            ->orderBy('name')
+            ->pluck('name');
+
+        return Inertia::render('Posts/Edit', compact('post', 'auth_user', 'categories'));
     }
 
     /**

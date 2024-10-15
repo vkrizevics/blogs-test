@@ -16,11 +16,15 @@ const props = defineProps({
     auth_user: {
         type: Boolean,
         required: true
+    },
+    categories: {
+        type: Array,
+        required: true
     }
 });
 
 let categoriesFoundArr = [];
-const categoriesSelected = ref(null);
+const categoriesSelected = ref(props.categories);
 const categoriesFound = ref(categoriesFoundArr);
 
 const form = useForm({
