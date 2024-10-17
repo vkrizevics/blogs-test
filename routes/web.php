@@ -35,4 +35,6 @@ Route::resource('categories', CategoryController::class)->middleware(['auth', 'v
 
 Route::get('categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
+Route::get('posts/search/{fragment}', [PostController::class, 'search'])->middleware(['auth', 'verified'])->name('posts.search');
+
 require __DIR__.'/auth.php';

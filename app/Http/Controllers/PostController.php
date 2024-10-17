@@ -8,6 +8,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -173,5 +174,40 @@ class PostController extends Controller
         $post->delete();
 
         return redirect('posts');
+    }
+
+    public function search(?string $postFragment)
+    {
+        $postsForLinks = Post::where(
+                DB::raw('CONCAT(title, " ", content)'),
+                'like',
+                '%' . str_replace(' ', '%', addslashes($postFragment)) . '%'
+            )
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        $posts = $postsForLinks
+            ->load('comments', 'user', 'categories');
+
+        $posts_count = count($posts);
+        foreach ($posts as $i => $post) {
+            $post->more_classes = '';
+
+            $post->created_at_formatted = $post->getCreatedAtFormatted();
+            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+            $post->is_author = Auth::check() && $post->user->id === Auth::id();
+
+            if ($i === $posts_count - 1) {
+                $posts->more_classes = 'pb-12';
+            }
+        }
+
+        $csrf_token = csrf_token();
+        $auth_user = Auth::check();
+        $links = $postsForLinks->toArray();
+        unset($links['data'], $links['links']);
+
+        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
     }
 }
