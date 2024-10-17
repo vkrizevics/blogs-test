@@ -17,8 +17,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderBy('created_at', 'desc')
-            ->paginate(5)
+        $postsForLinks = Post::orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        $posts = $postsForLinks
             ->load('comments', 'user', 'categories');
 
         $posts_count = count($posts);
@@ -37,8 +39,10 @@ class PostController extends Controller
 
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
+        $links = $postsForLinks->toArray();
+        unset($links['data'], $links['links']);
 
-        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts'));
+        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
     }
 
     /**

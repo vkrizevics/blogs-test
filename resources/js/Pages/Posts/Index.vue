@@ -4,7 +4,7 @@ import PostsLayout from '@/Layouts/PostsLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useTemplateRef } from 'vue';
 
-defineProps({
+const props = defineProps({
     csrf_token: {
         type: String,
         required: true
@@ -16,10 +16,16 @@ defineProps({
     posts: {
         type: Array,
         required: true
+    },
+    links: {
+        type: Object,
+        required: true,
     }
 });
 
-const first = useTemplateRef(0);
+console.log(props.links);
+
+const first = useTemplateRef(props.current_page);
 </script>
 
 <template>
@@ -34,8 +40,9 @@ const first = useTemplateRef(0);
             </h2>
         </template>
 
-        <Paginator v-model:first="first" :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"
-                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" />
+        <Paginator v-model:first="first" :rows="10" :totalRecords="links.total"
+                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                   @page="(e) => router.visit(route('posts.index', {page: e.page}))" />
 
         <template v-for="post in posts">
             <div class="pt-12" :class="post.more_classes">
