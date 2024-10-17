@@ -42,7 +42,18 @@ const first = useTemplateRef(props.current_page);
 
         <Paginator v-model:first="first" :rows="10" :totalRecords="links.total"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                   @page="(e) => router.visit(route('posts.index', {page: e.page}))" />
+                   @page="(e) => router.visit(route('posts.index', {page: e.page}))">
+            <template #start>
+            </template>
+            <template #end>
+                <Link href="#"
+                      class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+
+            </template>
+        </Paginator>
 
         <template v-for="post in posts">
             <div class="pt-12" :class="post.more_classes">
