@@ -1,8 +1,13 @@
 <script setup>
 import Paginator from 'primevue/paginator';
 import PostsLayout from '@/Layouts/PostsLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { useTemplateRef } from 'vue';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import Modal from '@/Components/Modal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import {nextTick, ref, useTemplateRef} from 'vue';
 
 const props = defineProps({
     csrf_token: {
@@ -23,9 +28,28 @@ const props = defineProps({
     }
 });
 
-console.log(props.links);
+const form = useForm({
+    keywords: ''
+});
+
+const showingSearch = ref(false);
+const keywordsInput = ref(null);
 
 const first = useTemplateRef(props.current_page);
+
+const showSearch = () => {
+    showingSearch.value = true;
+
+    // nextTick(() => keywordsInput.value.focus());
+}
+
+const closeModal = () => {
+    showingSearch.value = false;
+}
+
+const search = () => {
+
+};
 </script>
 
 <template>
@@ -50,10 +74,55 @@ const first = useTemplateRef(props.current_page);
                       class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                      @click.prevent="showSearch">Search</Link>
 
             </template>
         </Paginator>
+
+        <Modal :show="showingSearch" @close="closeModal">
+            <div class="p-6">
+                <!--<h2
+                    class="text-lg font-medium text-gray-900"
+                >
+                    Are you sure you want to delete your account?
+                </h2>-->
+
+                <div class="mt-6">
+                    <InputLabel
+                        for="keywords"
+                        value="Keywords"
+                    />
+
+                    <TextInput
+                        id="keywords"
+                        ref="keywordsInput"
+                        v-model="form.keywords"
+                        type="keywords"
+                        class="mt-1 block w-3/4"
+                        placeholder="Keywords"
+                        @keyup.enter="search"
+                    />
+
+                    <!--<InputError :message="form.errors.keywords" class="mt-2" />-->
+                </div>
+
+                <!--<div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal">
+                        Cancel
+                    </SecondaryButton>
+
+                    <DangerButton
+                        class="ms-3"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        @click="deleteUser"
+                    >
+                        Delete Account
+                    </DangerButton>
+                </div>-->
+            </div>
+        </Modal>
 
         <template v-for="post in posts">
             <div class="pt-12" :class="post.more_classes">
