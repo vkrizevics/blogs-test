@@ -26,7 +26,7 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="New Post" />
+    <Head title="New Comment" />
 
     <PostsLayout>
         <template #header>
@@ -87,12 +87,13 @@ const form = useForm({
                                 <input type="hidden" name="_token" :value="csrf_token">
 
                                 <div>
-                                    <InputLabel for="content" value="Content" />
+                                    <InputLabel for="content" value="Your comment" />
                                     <textarea
                                         id="content"
                                         class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full"
                                         v-model="form.content"
                                         required
+                                        autofocus
                                         autocomplete="content"
                                         rows="7"
                                     ></textarea>
