@@ -58,11 +58,11 @@ const addCategory = () => {
     axios.post('/categories/', {
             name: inputValueLower,
         })
-        .then((data) => {
-            console.log(data);
-        })
+
+        .then((data) => {})
         .catch((data) => {
-            console.log(data)
+            // Validation failed or something else happened
+            form.errors.categories = data.response.data.errors.name.join('<br>');
         });
 
     if (!categoriesFoundArr.includes(inputValueLower)) {
