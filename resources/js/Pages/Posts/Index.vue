@@ -49,7 +49,7 @@ const closeModal = () => {
 }
 
 const search = () => {
-
+    router.visit(route('posts.search', {fragment: form.keywords}));
 };
 </script>
 
@@ -65,29 +65,28 @@ const search = () => {
             </h2>
         </template>
 
-        <div>
-            <TextInput
-                id="keywords"
-                ref="keywordsInput"
-                v-model="form.keywords"
-                type="keywords"
-                class="mt-1 block w-1/4 inline-flex"
-                placeholder="Keywords"
-                @keyup.enter="search"
-            />
-            <Link :href="route('posts.search', {fragment: form.keywords})"
-                  class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
-        </div>
-
         <Paginator v-model:first="first" :rows="10" :totalRecords="links.total"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                    @page="(e) => router.visit(route('posts.index', {page: e.page}))">
-            <!--<template #start>
-            </template>-->
+            <template #start>
+            </template>
             <template #end>
+                <div>
+                    <TextInput
+                        id="keywords"
+                        ref="keywordsInput"
+                        v-model="form.keywords"
+                        type="keywords"
+                        class="mr-1 px-1 pb-1 block w-1/2 inline-flex border"
+                        placeholder="keywords"
+                        @keyup.enter="search"
+                    />
+                    <Link :href="route('posts.search', {fragment: form.keywords})"
+                          class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                      font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                      focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                      focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+                </div>
             </template>
         </Paginator>
 
