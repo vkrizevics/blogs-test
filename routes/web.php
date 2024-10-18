@@ -27,7 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('posts', PostController::class)->middleware(['auth', 'verified']);
+Route::resource('posts', PostController::class)->middleware(['auth', 'verified'])->except(['index']);
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
 Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
 

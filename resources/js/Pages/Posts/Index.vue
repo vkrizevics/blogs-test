@@ -56,7 +56,7 @@ const search = () => {
 <template>
     <Head title="Recent Posts" />
 
-    <AuthenticatedLayout>
+    <PostsLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -185,7 +185,7 @@ const search = () => {
                 </div>
             </div>
         </template>
-    </AuthenticatedLayout>
+    </PostsLayout>
 </template>
 <style>
 
