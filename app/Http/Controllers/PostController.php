@@ -80,6 +80,28 @@ class PostController extends Controller
 
         $post->save();
 
+        $categoryNames = $request->input('categories', []);
+
+        $categoryIds = [];
+        foreach ($categoryNames as $categoryName) {
+            $category = Category::where('name', $categoryName)
+                ->get()
+                ->first();
+
+            if (!$category) {
+                $category = new Category();
+                $category->name = $categoryName;
+
+                if (!$category->save()) {
+                    continue;
+                }
+            }
+
+            $categoryIds[] = $category->id;
+        }
+
+        $post->categories()->sync($categoryIds);
+
         return redirect('posts/' . (int)$post->id);
     }
 
@@ -209,10 +231,5 @@ class PostController extends Controller
         unset($links['data'], $links['links']);
 
         return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
-    }
-
-    public function searchpage ()
-    {
-
     }
 }

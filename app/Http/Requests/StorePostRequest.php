@@ -28,6 +28,7 @@ class StorePostRequest extends FormRequest
         return [
             'title' => 'required|max:255',
             'content' => 'required|max:65000',
+            'categories' => 'array'
         ];
     }
 
@@ -39,6 +40,17 @@ class StorePostRequest extends FormRequest
             },
             function (Validator $validator) {
                 $this->noTagsAllowed('content', $validator);
+            },
+            function (Validator $validator) {
+                $fields = $this->input('categories', []);
+                foreach ($fields as $field) {
+                    if (isset($field) && strip_tags($field) !== $field) {
+                        $validator->errors()->add(
+                            'categories',
+                            'No tags allowed'
+                        );
+                    }
+                }
             }
         ];
     }

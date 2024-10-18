@@ -1,6 +1,6 @@
 <script setup>
 import {Head, Link, useForm} from '@inertiajs/vue3';
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import PostsLayout from "@/Layouts/PostsLayout.vue";
 import AutoComplete from 'primevue/autocomplete';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -98,7 +98,7 @@ const formPatch = () => {
 <template>
     <Head title="Editing Post" />
 
-    <AuthenticatedLayout>
+    <PostsLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -142,13 +142,12 @@ const formPatch = () => {
                                 </div>
 
                                 <div>
-                                    <InputLabel for="content" value="Content" />
+                                    <InputLabel for="content" value="Text" />
                                     <textarea
                                         id="content"
                                         class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full"
                                         v-model="form.content"
                                         required
-                                        autocomplete="content"
                                         rows="7"
                                     ></textarea>
                                     <InputError class="mt-2" :message="form.errors.content" />
@@ -177,7 +176,7 @@ const formPatch = () => {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </PostsLayout>
 </template>
 
 <style>
