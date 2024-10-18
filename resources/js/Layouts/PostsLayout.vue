@@ -20,7 +20,7 @@ props.canRegister = true;
     <div class="bg-gray-50 dark:bg-black dark:text-white/50 bg-opacity-50">
         <img
             id="background"
-            class="absolute -left-96 top-0 max-w-[877px]"
+            class="absolute -left-96 -top-80 max-w-[877px]"
             src="https://laravel.com/assets/img/welcome/background.svg"
         />
         <div
