@@ -210,4 +210,9 @@ class PostController extends Controller
 
         return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
     }
+
+    public function searchpage ()
+    {
+
+    }
 }

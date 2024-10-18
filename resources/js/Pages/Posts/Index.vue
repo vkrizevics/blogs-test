@@ -8,6 +8,7 @@ import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import {nextTick, ref, useTemplateRef} from 'vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const props = defineProps({
     csrf_token: {
@@ -55,7 +56,7 @@ const search = () => {
 <template>
     <Head title="Recent Posts" />
 
-    <GuestLayout>
+    <AuthenticatedLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -64,19 +65,29 @@ const search = () => {
             </h2>
         </template>
 
+        <div>
+            <TextInput
+                id="keywords"
+                ref="keywordsInput"
+                v-model="form.keywords"
+                type="keywords"
+                class="mt-1 block w-1/4 inline-flex"
+                placeholder="Keywords"
+                @keyup.enter="search"
+            />
+            <Link :href="route('posts.search', {fragment: form.keywords})"
+                  class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+        </div>
+
         <Paginator v-model:first="first" :rows="10" :totalRecords="links.total"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                    @page="(e) => router.visit(route('posts.index', {page: e.page}))">
-            <template #start>
-            </template>
+            <!--<template #start>
+            </template>-->
             <template #end>
-                <Link href="#"
-                      class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                      @click.prevent="showSearch">Search</Link>
-
             </template>
         </Paginator>
 
@@ -94,15 +105,15 @@ const search = () => {
                         value="Keywords"
                     />
 
-                    <TextInput
+                    <!--<TextInput
                         id="keywords"
                         ref="keywordsInput"
                         v-model="form.keywords"
                         type="keywords"
-                        class="mt-1 block w-3/4"
+                        class="mt-1 block w-full"
                         placeholder="Keywords"
                         @keyup.enter="search"
-                    />
+                    />-->
 
                     <!--<InputError :message="form.errors.keywords" class="mt-2" />-->
                 </div>
@@ -174,7 +185,7 @@ const search = () => {
                 </div>
             </div>
         </template>
-    </GuestLayout>
+    </AuthenticatedLayout>
 </template>
 <style>
 
