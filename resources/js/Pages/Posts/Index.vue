@@ -91,50 +91,6 @@ const search = () => {
             </template>
         </Paginator>
 
-        <Modal :show="showingSearch" @close="closeModal">
-            <div class="p-6">
-                <!--<h2
-                    class="text-lg font-medium text-gray-900"
-                >
-                    Are you sure you want to delete your account?
-                </h2>-->
-
-                <div class="mt-6">
-                    <InputLabel
-                        for="keywords"
-                        value="Keywords"
-                    />
-
-                    <!--<TextInput
-                        id="keywords"
-                        ref="keywordsInput"
-                        v-model="form.keywords"
-                        type="keywords"
-                        class="mt-1 block w-full"
-                        placeholder="Keywords"
-                        @keyup.enter="search"
-                    />-->
-
-                    <!--<InputError :message="form.errors.keywords" class="mt-2" />-->
-                </div>
-
-                <!--<div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">
-                        Cancel
-                    </SecondaryButton>
-
-                    <DangerButton
-                        class="ms-3"
-                        :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing"
-                        @click="deleteUser"
-                    >
-                        Delete Account
-                    </DangerButton>
-                </div>-->
-            </div>
-        </Modal>
-
         <template v-for="post in posts">
             <div class="pt-12" :class="post.more_classes">
                 <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">

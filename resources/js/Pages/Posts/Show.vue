@@ -1,6 +1,7 @@
 <script setup>
 import PostsLayout from '@/Layouts/PostsLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import Paginator from "primevue/paginator";
 
 defineProps({
     csrf_token: {
@@ -16,12 +17,16 @@ defineProps({
         required: true
     }
 });
+
+const links = {
+    total: 10
+}
 </script>
 
 <template>
     <Head :title="post.title" />
 
-    <GuestLayout>
+    <PostsLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -30,7 +35,7 @@ defineProps({
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-12 mt-20">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
@@ -87,5 +92,5 @@ defineProps({
                 </div>
             </div>
         </div>
-    </GuestLayout>
+    </PostsLayout>
 </template>

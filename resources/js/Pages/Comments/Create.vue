@@ -1,6 +1,6 @@
 <script setup>
 import {Head, Link, router, useForm} from '@inertiajs/vue3';
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import PostsLayout from "@/Layouts/PostsLayout.vue";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -28,7 +28,7 @@ const form = useForm({
 <template>
     <Head title="New Post" />
 
-    <AuthenticatedLayout>
+    <PostsLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -122,5 +122,5 @@ const form = useForm({
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </PostsLayout>
 </template>
