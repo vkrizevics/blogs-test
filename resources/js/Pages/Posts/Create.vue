@@ -52,13 +52,12 @@ const addCategory = () => {
     const inputValueLower = categoriesInput.value.toLowerCase();
 
     axios.post('/categories/', {
-        name: inputValueLower,
-    })
-        .then((data) => {
-            console.log(data);
+            name: inputValueLower,
         })
+        .then((data) => {})
         .catch((data) => {
-            console.log(data)
+            // Validation failed or something else happened
+            form.errors.categories = data.response.data.errors.name.join('<br>');
         });
 
     if (!categoriesFoundArr.includes(inputValueLower)) {
@@ -82,12 +81,12 @@ const addCategory = () => {
 
 const formPost = () => {
     form.transform((data) => ({
-            ...data,
-            categories: categoriesSelected.value
-        }))
-        .post(
-            route('posts.store')
-        );
+        ...data,
+        categories: categoriesSelected.value
+    }))
+    .post(
+        route('posts.store')
+    );
 }
 </script>
 

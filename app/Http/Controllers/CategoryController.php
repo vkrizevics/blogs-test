@@ -51,7 +51,7 @@ class CategoryController extends Controller
 
         if (!$category_is_stored) {
             $cat = new Category();
-            $cat->fill($request->all());
+            $cat->fill($request->validated());
             $success = $cat->save();
             $error = !$success ? 'Cannot store in DB' : '';
         } else {

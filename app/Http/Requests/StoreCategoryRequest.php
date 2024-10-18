@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\NoTags;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
 
 class StoreCategoryRequest extends FormRequest
 {
+    use NoTags;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,6 +27,14 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255'
+        ];
+    }
+
+    public function after() {
+        return [
+            function (Validator $validator) {
+                $this->noTagsAllowed('name', $validator);
+            },
         ];
     }
 }
