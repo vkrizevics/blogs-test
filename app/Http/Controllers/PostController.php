@@ -16,10 +16,10 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $postsForLinks = Post::orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(10);
 
         $posts = $postsForLinks
             ->load('comments', 'user', 'categories');

@@ -26,8 +26,10 @@ const props = defineProps({
     links: {
         type: Object,
         required: true,
-    }
+    },
 });
+
+const first = ref(props.links.from - 1);
 
 const form = useForm({
     keywords: ''
@@ -35,8 +37,6 @@ const form = useForm({
 
 const showingSearch = ref(false);
 const keywordsInput = ref(null);
-
-const first = useTemplateRef(props.current_page);
 
 const showSearch = () => {
     showingSearch.value = true;
@@ -65,9 +65,9 @@ const search = () => {
             </h2>
         </template>
 
-        <Paginator v-model:first="first" :rows="10" :totalRecords="links.total"
+        <Paginator :first="first" :rows="10" :totalRecords="links.total"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                   @page="(e) => router.visit(route('posts.index', {page: e.page}))">
+                   @page="(e) => router.visit(route('posts.index', {page: e.page + 1}))">
             <template #start>
             </template>
             <template #end>
