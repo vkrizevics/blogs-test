@@ -121,7 +121,7 @@ class PostController extends Controller
         $auth_user = Auth::check();
 
         foreach ($post->comments as $comment) {
-            $comment->is_author = Auth::check() && $comment->user->id = Auth::id();
+            $comment->is_author = Auth::check() && $comment->user->id === Auth::id();
         }
 
         return Inertia::render('Posts/Show', compact('csrf_token', 'auth_user', 'post'));
