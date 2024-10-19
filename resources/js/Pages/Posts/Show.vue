@@ -80,6 +80,8 @@ const links = {
                     </div>
 
                     <div v-for="comment in post.comments">
+                        <div class="font-semibold"> {{ comment.user.name }} </div>
+
                         {{ comment.content }}
 
                         <a v-if="comment.is_author" href="#destroy-comment"

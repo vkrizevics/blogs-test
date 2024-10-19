@@ -110,7 +110,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['comments', 'user', 'categories']);
+        $post->load(['comments', 'comments.user', 'user', 'categories']);
 
         $post->created_at_formatted = $post->getCreatedAtFormatted();
         $post->escaped_content = nl2br(htmlspecialchars($post->content), false);

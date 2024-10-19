@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,18 +31,22 @@ class DatabaseSeeder extends Seeder
                 continue;
             }
 
+            $usersNeeded = [];
             foreach ($allUsers as $usersPart) {
                 foreach ($usersPart as $user) {
                     $per_user = random_int(0, 3);
-                    if (!$per_user) {
-                        continue;
+                    for ($i = 0; $i < $per_user; $i++) {
+                        $usersNeeded[] = $user;
                     }
-
-                    Comment::factory($per_user)
-                        ->for($user)
-                        ->for($post)
-                        ->create();
                 }
+            }
+
+            $usersRandomized = Arr::shuffle($usersNeeded);
+            foreach ($usersRandomized as $userR) {
+                Comment::factory(1)
+                    ->for($userR)
+                    ->for($post)
+                    ->create();
             }
         }
     }
