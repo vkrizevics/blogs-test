@@ -111,9 +111,11 @@ const formPost = () => {
                                 <input type="hidden" name="_token" :value="csrf_token">
 
                                 <div class="categories-autocomplete">
-                                    <InputLabel for="categories" value="Categories" class="px-1"/>
+                                    <InputLabel for="categories" value="Categories" class=""/>
                                     <AutoComplete v-model="categoriesSelected" multiple :suggestions="categoriesFound" @complete="searchCategories"
-                                                  ref="categories" inputId="categoriesInput" class="block w-full">
+                                                  ref="categories" inputId="categoriesInput" class="w-full"
+                                                  :inputClass="['px-3', '-my-0.5', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm',
+                                                                'focus:border-indigo-500', 'focus:ring-indigo-500']">
                                         <template #footer>
                                             <div class="px-3 py-3">
                                                 <PrimaryButton :v-show="categoriesIncludes" @click.prevent="addCategory">&#128930; Add New</PrimaryButton>
@@ -178,15 +180,7 @@ const formPost = () => {
 
 <style>
 
-#categoriesInput {
-    @apply my-1;
-    @apply mx-1;
-    @apply block;
-    @apply w-full;
-    @apply rounded-md;
-    @apply border-gray-300;
-    @apply shadow-sm;
-    @apply focus:border-indigo-500;
-    @apply focus:ring-indigo-500;
+.p-autocomplete-input-chip {
+    @apply mx-px;
 }
 </style>
