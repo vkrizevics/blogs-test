@@ -111,7 +111,7 @@ const formPost = () => {
                                 <input type="hidden" name="_token" :value="csrf_token">
 
                                 <div class="categories-autocomplete">
-                                    <InputLabel for="categories" value="Categories" />
+                                    <InputLabel for="categories" value="Categories" class="px-1"/>
                                     <AutoComplete v-model="categoriesSelected" multiple :suggestions="categoriesFound" @complete="searchCategories"
                                                   ref="categories" inputId="categoriesInput" class="block w-full">
                                         <template #footer>
@@ -138,7 +138,7 @@ const formPost = () => {
                                 </div>
 
                                 <div>
-                                    <InputLabel for="content" value="Content" />
+                                    <InputLabel for="content" value="Text" />
                                     <textarea
                                         id="content"
                                         class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full"

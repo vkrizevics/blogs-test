@@ -114,7 +114,7 @@ const formPatch = () => {
                         <section>
                             <form @submit.prevent="formPatch" class="space-y-6">
                                 <div class="categories-autocomplete">
-                                    <InputLabel for="categories" value="Categories" />
+                                    <InputLabel for="categories" value="Categories" class="px-1" />
                                     <AutoComplete v-model="categoriesSelected" multiple :suggestions="categoriesFound" @complete="searchCategories"
                                                   ref="categories" inputId="categoriesInput" class="block w-full">
                                         <template #footer>
