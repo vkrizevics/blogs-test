@@ -25,15 +25,22 @@ class DatabaseSeeder extends Seeder
         $allUsers = [$usersWithPosts, $userWithoutPosts];
         $posts = Post::all();
         foreach ($posts as $post) {
+            $comments_needed = random_int(0, 3);
+            if (!$comments_needed) {
+                continue;
+            }
+
             foreach ($allUsers as $usersPart) {
                 foreach ($usersPart as $user) {
                     $per_user = random_int(0, 3);
-                    if ($per_user > 0) {
-                        Comment::factory($per_user)
-                            ->for($user)
-                            ->for($post)
-                            ->create();
+                    if (!$per_user) {
+                        continue;
                     }
+
+                    Comment::factory($per_user)
+                        ->for($user)
+                        ->for($post)
+                        ->create();
                 }
             }
         }
