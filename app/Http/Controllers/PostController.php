@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -80,27 +81,27 @@ class PostController extends Controller
 
         $post->save();
 
-        $categoryNames = $request->input('categories', []);
+        $category_names = $request->input('categories', []);
 
-        $categoryIds = [];
-        foreach ($categoryNames as $categoryName) {
-            $category = Category::where('name', $categoryName)
+        $category_ids = [];
+        foreach ($category_names as $category_name) {
+            $category = Category::where('name', $category_name)
                 ->get()
                 ->first();
 
             if (!$category) {
                 $category = new Category();
-                $category->name = $categoryName;
+                $category->name = $category_name;
 
                 if (!$category->save()) {
                     continue;
                 }
             }
 
-            $categoryIds[] = $category->id;
+            $category_ids[] = $category->id;
         }
 
-        $post->categories()->sync($categoryIds);
+        $post->categories()->sync($category_ids);
 
         return redirect('posts/' . (int)$post->id);
     }
@@ -163,27 +164,27 @@ class PostController extends Controller
 
         $post->save();
 
-        $categoryNames = $request->input('categories', []);
+        $category_names = $request->input('categories', []);
 
-        $categoryIds = [];
-        foreach ($categoryNames as $categoryName) {
-            $category = Category::where('name', $categoryName)
+        $category_ids = [];
+        foreach ($category_names as $category_name) {
+            $category = Category::where('name', $category_name)
                 ->get()
                 ->first();
 
             if (!$category) {
                 $category = new Category();
-                $category->name = $categoryName;
+                $category->name = $category_name;
 
                 if (!$category->save()) {
                     continue;
                 }
             }
 
-            $categoryIds[] = $category->id;
+            $category_ids[] = $category->id;
         }
 
-        $post->categories()->sync($categoryIds);
+        $post->categories()->sync($category_ids);
 
         return redirect('posts/' . (int)$post->id);
     }
@@ -198,17 +199,17 @@ class PostController extends Controller
         return redirect('posts');
     }
 
-    public function search(?string $postFragment)
+    public function search(?string $post_fragment)
     {
-        $postsForLinks = Post::where(
+        $posts_for_links = Post::where(
                 DB::raw('CONCAT(title, " ", content)'),
                 'like',
-                '%' . str_replace(' ', '%', addslashes($postFragment)) . '%'
+                '%' . str_replace(' ', '%', addslashes($post_fragment)) . '%'
             )
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-        $posts = $postsForLinks
+        $posts = $posts_for_links
             ->load('comments', 'user', 'categories');
 
         $posts_count = count($posts);
@@ -227,9 +228,21 @@ class PostController extends Controller
 
         $csrf_token = csrf_token();
         $auth_user = Auth::check();
-        $links = $postsForLinks->toArray();
+        $links = $posts_for_links->toArray();
         unset($links['data'], $links['links']);
 
         return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
+    }
+
+    public function user(?string $user_name) {
+        $user = User::where('name', str_replace('_', ' ', $user_name))
+            ->first();
+
+        $posts = $user->posts()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->toArray();
+
+        die(print_r($posts, true));
     }
 }
