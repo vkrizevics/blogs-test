@@ -102,7 +102,7 @@ class CategoryController extends Controller
         unset($links['data'], $links['links']);
 
 
-        return Inertia::render('Posts/Index', compact('auth_user', 'posts', 'links'));
+        return Inertia::render('Posts/Category', compact('auth_user', 'posts', 'links', 'category'));
     }
 
     /**
