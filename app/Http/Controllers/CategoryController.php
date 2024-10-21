@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\User;
 
 class CategoryController extends Controller
 {
@@ -52,6 +53,7 @@ class CategoryController extends Controller
         if (!$category_is_stored) {
             $cat = new Category();
             $cat->fill($request->validated());
+            $cat->name = str_replace(' ', '', mb_strtolower($cat->name));
             $success = $cat->save();
             $error = !$success ? 'Cannot store in DB' : '';
         } else {
@@ -65,9 +67,17 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(?string $category_name)
     {
-        //
+        $cat = Category::where('name', str_replace(' ', '', $category_name))
+            ->first();
+
+        $posts = $cat->posts()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->toArray();
+
+        die(print_r($posts, true));
     }
 
     /**
