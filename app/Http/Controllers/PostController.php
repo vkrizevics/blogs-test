@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\IsAuthorTrait;
 use App\Models\Category;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
@@ -14,6 +15,7 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
+    use IsAuthorTrait;
     /**
      * Display a listing of the resource.
      */
@@ -262,10 +264,5 @@ class PostController extends Controller
 
 
         return Inertia::render('Posts/User', compact('auth_user', 'posts', 'links', 'user'));
-    }
-
-    protected function isAuthor(object $model): bool
-    {
-        return Auth::check() && $model->user->id === Auth::id();
     }
 }

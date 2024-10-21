@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\IsAuthorTrait;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    use IsAuthorTrait;
     /**
      * Get autocompletion variants for a category fragment
      * @param string|null $categoryName
@@ -69,15 +73,36 @@ class CategoryController extends Controller
      */
     public function show(?string $category_name)
     {
-        $cat = Category::where('name', str_replace(' ', '', $category_name))
+        $category = Category::where('name', str_replace(' ', '', $category_name))
             ->first();
 
-        $posts = $cat->posts()
+        $postsForLinks = $category->posts()
             ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->toArray();
+            ->paginate(10);
 
-        die(print_r($posts, true));
+        $posts = $postsForLinks
+            ->load('comments', 'user', 'categories');
+
+        $posts_count = count($posts);
+        foreach ($posts as $i => $post) {
+            $post->more_classes = '';
+
+            $post->created_at_formatted = $post->getCreatedAtFormatted();
+            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+            $post->is_author = static::isAuthor($post);
+
+            if ($i === $posts_count - 1) {
+                $posts->more_classes = 'pb-12';
+            }
+        }
+
+        $auth_user = Auth::check();
+        $links = $postsForLinks->toArray();
+        unset($links['data'], $links['links']);
+
+
+        return Inertia::render('Posts/Index', compact('auth_user', 'posts', 'links'));
     }
 
     /**
