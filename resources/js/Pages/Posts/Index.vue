@@ -96,7 +96,7 @@ const search = () => {
                 <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
-                        <div>
+                        <div class="divide-y-4">
                             <h2 class="text-xl bg-white leading-tight">
                                 <Link :href="route('posts.user', { name: post.user.name.split(' ').join('_')})"
                                       class="font-semibold">{{ post.user.name }}</Link>
