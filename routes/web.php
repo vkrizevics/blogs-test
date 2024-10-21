@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::resource('posts', PostController::class)->middleware(['auth', 'verified'])->except(['index', 'show']);
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/posts/user/{name}', [PostController::class, 'user'])->name('posts.user');
+Route::get('/user/{name}', [PostController::class, 'user'])->name('posts.user');
 
 Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
 
