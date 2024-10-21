@@ -207,7 +207,7 @@ class PostController extends Controller
                 '%' . str_replace(' ', '%', addslashes($post_fragment)) . '%'
             )
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(10);
 
         $posts = $posts_for_links
             ->load('comments', 'user', 'categories');
@@ -239,11 +239,33 @@ class PostController extends Controller
         $user = User::where('name', str_replace('_', ' ', $user_name))
             ->first();
 
-        $posts = $user->posts()
+        $postsForLinks = $user->posts()
             ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->toArray();
+            ->paginate(10);
 
-        die(print_r($posts, true));
+        $posts = $postsForLinks
+            ->load('comments', 'user', 'categories');
+
+        $posts_count = count($posts);
+        foreach ($posts as $i => $post) {
+            $post->more_classes = '';
+
+            $post->created_at_formatted = $post->getCreatedAtFormatted();
+            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+            $post->is_author = Auth::check() && $post->user->id === Auth::id();
+
+            if ($i === $posts_count - 1) {
+                $posts->more_classes = 'pb-12';
+            }
+        }
+
+        $csrf_token = csrf_token();
+        $auth_user = Auth::check();
+        $links = $postsForLinks->toArray();
+        unset($links['data'], $links['links']);
+
+
+        return Inertia::render('Posts/User', compact('csrf_token', 'auth_user', 'posts', 'links', 'user'));
     }
 }
