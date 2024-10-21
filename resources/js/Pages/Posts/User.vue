@@ -73,7 +73,7 @@ const search = () => {
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                    @page="(e) => router.visit(route('posts.user', { name: user.name.split(' ').join('_'), page: e.page + 1 }))">
             <template #start>
-                <Link :href="route('posts.user', { name: user.name.split(' ').join('_')})"
+                <Link :href="route('posts.user', { name: user.name.split(' ').join('_') })"
                       class="font-semibold">{{ user.name }}</Link>
             </template>
             <template #end>

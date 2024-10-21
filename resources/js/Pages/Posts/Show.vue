@@ -80,7 +80,10 @@ const links = {
                     </div>
 
                     <div v-for="comment in post.comments">
-                        <div class="font-semibold"> {{ comment.user.name }} </div>
+                        <div class="font-semibold">
+                            <Link :href="route('posts.user', { name: comment.user.name.split(' ').join('_') })"
+                                  class="font-semibold">{{ comment.user.name }}</Link>
+                        </div>
 
                         {{ comment.content }}
 
@@ -89,7 +92,7 @@ const links = {
                               font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                               focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                               focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 float-right"
-                           @click.prevent="router.delete(route('comments.destroy', {comment: comment.id}), {_token: $page.props.csrf_token});">X</a>
+                           @click.prevent="router.delete(route('comments.destroy', { comment: comment.id }), { _token: $page.props.csrf_token });">X</a>
                     </div>
                 </div>
             </div>
