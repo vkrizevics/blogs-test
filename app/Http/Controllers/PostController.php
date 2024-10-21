@@ -32,7 +32,7 @@ class PostController extends Controller
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-            $post->is_author = Auth::check() && $post->user->id === Auth::id();
+            $post->is_author = static::isAuthor($post);
 
             if ($i === $posts_count - 1) {
                 $posts->more_classes = 'pb-12';
@@ -114,12 +114,12 @@ class PostController extends Controller
         $post->created_at_formatted = $post->getCreatedAtFormatted();
         $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-        $post->is_author = Auth::check() && $post->user->id = Auth::id();
+        $post->is_author = static::isAuthor($post);
 
         $auth_user = Auth::check();
 
         foreach ($post->comments as $comment) {
-            $comment->is_author = Auth::check() && $comment->user->id === Auth::id();
+            $comment->is_author = static::isAuthor($comment);
         }
 
         return Inertia::render('Posts/Show', compact('auth_user', 'post'));
@@ -216,7 +216,7 @@ class PostController extends Controller
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-            $post->is_author = Auth::check() && $post->user->id === Auth::id();
+            $post->is_author = static::isAuthor($post);
 
             if ($i === $posts_count - 1) {
                 $posts->more_classes = 'pb-12';
@@ -249,7 +249,7 @@ class PostController extends Controller
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
-            $post->is_author = Auth::check() && $post->user->id === Auth::id();
+            $post->is_author = static::isAuthor($post);
 
             if ($i === $posts_count - 1) {
                 $posts->more_classes = 'pb-12';
@@ -262,5 +262,10 @@ class PostController extends Controller
 
 
         return Inertia::render('Posts/User', compact('auth_user', 'posts', 'links', 'user'));
+    }
+
+    protected function isAuthor(object $model): bool
+    {
+        return Auth::check() && $model->user->id === Auth::id();
     }
 }
