@@ -6,10 +6,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 defineProps({
-    csrf_token: {
-        type: String,
-        required: true
-    },
     auth_user: {
         type: Boolean,
         required: true
@@ -62,7 +58,7 @@ const form = useForm({
                     </div>
 
                     <div v-if="auth_user">
-                        <Link v-if="post.is_author" :href="route('posts.edit', {post: post.id})"
+                        <Link v-if="post.is_author" :href="route('posts.edit', { post: post.id })"
                               class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
@@ -72,9 +68,9 @@ const form = useForm({
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                                   focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                              @click.prevent="router.delete(route('posts.destroy', {post: post.id}), {_token: $page.props.csrf_token});">Delete</Link>
+                              @click.prevent="router.delete(route('posts.destroy', { post: post.id }))">Delete</Link>
 
-                        <Link :href="route('posts.comments.create', {post: post.id})"
+                        <Link :href="route('posts.comments.create', { post: post.id })"
                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
@@ -83,9 +79,7 @@ const form = useForm({
 
                     <div>
                         <section>
-                            <form @submit.prevent="form.post(route('posts.comments.store', {post: post.id}))">
-                                <input type="hidden" name="_token" :value="csrf_token">
-
+                            <form @submit.prevent="form.post(route('posts.comments.store', { post: post.id }))">
                                 <div>
                                     <InputLabel for="content" value="Your comment" />
                                     <textarea

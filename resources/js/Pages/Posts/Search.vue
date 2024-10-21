@@ -7,10 +7,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 defineProps({
-    csrf_token: {
-        type: String,
-        required: true
-    },
     auth_user: {
         type: Boolean,
         required: true
@@ -41,8 +37,6 @@ const form = useForm({
                     <div>
                         <section>
                             <form @submit.prevent="form.post(route('posts.store'))" class="space-y-6">
-                                <input type="hidden" name="_token" :value="csrf_token">
-
                                 <div>
                                     <InputLabel for="title" value="Title" />
                                     <TextInput

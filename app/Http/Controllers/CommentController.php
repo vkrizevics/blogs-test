@@ -31,10 +31,9 @@ class CommentController extends Controller
 
         $post->is_author = Auth::check() && $post->user->id = Auth::id();
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
-        return Inertia::render('Comments/Create', compact('csrf_token','auth_user', 'post'));
+        return Inertia::render('Comments/Create', compact('auth_user', 'post'));
     }
 
     /**

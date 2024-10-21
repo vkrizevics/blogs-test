@@ -90,7 +90,7 @@ const formPatch = () => {
             categories: categoriesSelected.value
         }))
         .patch(
-            route('posts.update', {post: props.post.id})
+            route('posts.update', { post: props.post.id })
         );
 }
 </script>

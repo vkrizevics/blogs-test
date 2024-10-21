@@ -4,10 +4,6 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import Paginator from "primevue/paginator";
 
 defineProps({
-    csrf_token: {
-        type: String,
-        required: true
-    },
     auth_user: {
         type: Boolean,
         required: true
@@ -60,7 +56,7 @@ const links = {
                     </div>
 
                     <div v-if="auth_user">
-                        <Link v-if="post.is_author" :href="route('posts.edit', {post: post.id})"
+                        <Link v-if="post.is_author" :href="route('posts.edit', { post: post.id })"
                               class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
@@ -70,9 +66,9 @@ const links = {
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                                   focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                              @click.prevent="router.delete(route('posts.destroy', {post: post.id}), {_token: $page.props.csrf_token});">Delete</Link>
+                              @click.prevent="router.delete(route('posts.destroy', { post: post.id }))">Delete</Link>
 
-                        <Link :href="route('posts.comments.create', {post: post.id})"
+                        <Link :href="route('posts.comments.create', { post: post.id })"
                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
                                   font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                                   focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
@@ -92,7 +88,7 @@ const links = {
                               font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
                               focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
                               focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 float-right"
-                           @click.prevent="router.delete(route('comments.destroy', { comment: comment.id }), { _token: $page.props.csrf_token });">X</a>
+                           @click.prevent="router.delete(route('comments.destroy', { comment: comment.id }))">X</a>
                     </div>
                 </div>
             </div>

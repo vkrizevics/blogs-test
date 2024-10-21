@@ -39,12 +39,11 @@ class PostController extends Controller
             }
         }
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
         $links = $postsForLinks->toArray();
         unset($links['data'], $links['links']);
 
-        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
+        return Inertia::render('Posts/Index', compact('auth_user', 'posts', 'links'));
     }
 
     /**
@@ -58,10 +57,9 @@ class PostController extends Controller
             return redirect('login');
         }
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
-        return Inertia::render('Posts/Create', compact('csrf_token', 'auth_user'));
+        return Inertia::render('Posts/Create', compact('auth_user'));
     }
 
     /**
@@ -118,14 +116,13 @@ class PostController extends Controller
 
         $post->is_author = Auth::check() && $post->user->id = Auth::id();
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
 
         foreach ($post->comments as $comment) {
             $comment->is_author = Auth::check() && $comment->user->id === Auth::id();
         }
 
-        return Inertia::render('Posts/Show', compact('csrf_token', 'auth_user', 'post'));
+        return Inertia::render('Posts/Show', compact('auth_user', 'post'));
     }
 
     /**
@@ -226,12 +223,11 @@ class PostController extends Controller
             }
         }
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
         $links = $posts_for_links->toArray();
         unset($links['data'], $links['links']);
 
-        return Inertia::render('Posts/Index', compact('csrf_token', 'auth_user', 'posts', 'links'));
+        return Inertia::render('Posts/Index', compact('auth_user', 'posts', 'links'));
     }
 
     public function user(?string $user_name)
@@ -260,12 +256,11 @@ class PostController extends Controller
             }
         }
 
-        $csrf_token = csrf_token();
         $auth_user = Auth::check();
         $links = $postsForLinks->toArray();
         unset($links['data'], $links['links']);
 
 
-        return Inertia::render('Posts/User', compact('csrf_token', 'auth_user', 'posts', 'links', 'user'));
+        return Inertia::render('Posts/User', compact('auth_user', 'posts', 'links', 'user'));
     }
 }
