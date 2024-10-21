@@ -85,16 +85,10 @@ class CategoryController extends Controller
 
         $posts_count = count($posts);
         foreach ($posts as $i => $post) {
-            $post->more_classes = '';
-
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
 
             $post->is_author = static::isAuthor($post);
-
-            if ($i === $posts_count - 1) {
-                $posts->more_classes = 'pb-12';
-            }
         }
 
         $auth_user = Auth::check();

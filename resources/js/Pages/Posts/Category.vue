@@ -94,7 +94,7 @@ const search = () => {
         </Paginator>
 
         <template v-for="post in posts">
-            <div class="pt-12" :class="post.more_classes">
+            <div class="pt-12">
                 <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
@@ -160,7 +160,7 @@ const search = () => {
             </div>
         </template>
 
-        <Paginator :first="first" :rows="10" :totalRecords="links.total"
+        <Paginator v-if="posts.length" :first="first" :rows="10" :totalRecords="links.total" class="pt-12"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                    @page="(e) => router.visit(route('category.show', { category: category.name.split(' ').join('').toLowerCase(), page: e.page + 1 }))">
             <template #start>

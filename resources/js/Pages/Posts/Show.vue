@@ -36,8 +36,10 @@ const links = {
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
                     <div class="divide-y-4">
-                        <h2 class="font-semibold text-xl bg-white leading-tight">
-                            {{ post.title }} by {{ post.user.name }}
+                        <h2 class="text-xl bg-white leading-tight">
+                            <Link :href="route('posts.user', { name: post.user.name.split(' ').join('_') })"
+                                  class="font-semibold">{{ post.user.name }}</Link>
+                            {{ post.title }}
                         </h2>
                         <div class="text-sm">
                             {{ post.created_at_formatted }}
@@ -48,7 +50,9 @@ const links = {
 
                     <div>
                             <span v-for="category in post.categories"
-                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">{{ category.name }}</span>
+                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">
+                                <Link :href="route('category.show', { category: category.name.split(' ').join('').toLowerCase() })"
+                                      class="font-semibold">{{ category.name }}</Link></span>
                     </div>
 
                     <div>

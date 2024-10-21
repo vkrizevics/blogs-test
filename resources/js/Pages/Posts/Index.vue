@@ -65,6 +65,9 @@ const search = () => {
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                    @page="(e) => router.visit(route('posts.index', { page: e.page + 1 }))">
             <template #start>
+                <Link :href="route('posts.index')" class="font-semibold">
+                    Everybody's Recent Posts
+                </Link>
             </template>
             <template #end>
                 <div>
@@ -88,7 +91,7 @@ const search = () => {
         </Paginator>
 
         <template v-for="post in posts">
-            <div class="pt-12" :class="post.more_classes">
+            <div class="pt-12">
                 <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
@@ -141,6 +144,50 @@ const search = () => {
                 </div>
             </div>
         </template>
+        <template v-if="!posts.length">
+            <div class="py-12">
+                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                    <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
+
+                        <div class="divide-y-4">
+                            <h2 class="text-xl bg-white leading-tight">
+                                No posts yet.
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <Paginator v-if="posts.length" :first="first" :rows="10" :totalRecords="links.total"
+                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                   @page="(e) => router.visit(route('posts.index', { page: e.page + 1 }))">
+            <template #start>
+                <Link :href="route('posts.index')" class="font-semibold">
+                    Everybody's Recent Posts
+                </Link>
+            </template>
+            <template #end>
+                <div>
+                    <TextInput
+                        id="keywords"
+                        ref="keywordsInput"
+                        v-model="form.keywords"
+                        type="keywords"
+                        class="mr-1 px-1 pb-1 block w-1/2 inline-flex border"
+                        placeholder="keywords"
+                        @keyup.enter="search"
+                    />
+                    <Link href="#search"
+                          @click.prevent="search"
+                          class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                      font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                      focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                      focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+                </div>
+            </template>
+        </Paginator>
+
     </PostsLayout>
 </template>
 <style>
