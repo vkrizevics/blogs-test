@@ -36,7 +36,9 @@ Route::get('/posts/user/{name}', [PostController::class, 'user'])->name('posts.u
 
 Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
 
-Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified']);
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
+
+Route::get('category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
 Route::get('categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
