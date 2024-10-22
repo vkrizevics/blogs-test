@@ -22,13 +22,13 @@ const props = defineProps({
     links: {
         type: Object,
         required: true,
-    },
+    }
 });
 
 const first = ref(props.links.from - 1);
 
 const form = useForm({
-    keywords: ''
+    keywords: props.post_fragment ?? ''
 });
 
 const showingSearch = ref(false);

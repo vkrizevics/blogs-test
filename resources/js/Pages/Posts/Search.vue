@@ -1,91 +1,247 @@
 <script setup>
-import {Head, Link, useForm} from '@inertiajs/vue3';
-import PostsLayout from "@/Layouts/PostsLayout.vue";
+import Paginator from 'primevue/paginator';
+import PostsLayout from '@/Layouts/PostsLayout.vue';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {nextTick, ref, useTemplateRef} from 'vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
-defineProps({
+const props = defineProps({
     auth_user: {
         type: Boolean,
         required: true
+    },
+    posts: {
+        type: Array,
+        required: true
+    },
+    links: {
+        type: Object,
+        required: true,
+    },
+    post_fragment: {
+        type: String,
+        required: false
     }
 });
 
+const first = ref(props.links.from - 1);
+
 const form = useForm({
-    title: '',
-    content: ''
+    keywords: props.post_fragment ?? ''
 });
+
+const showingSearch = ref(false);
+const keywordsInput = ref(null);
+
+const showSearch = () => {
+    showingSearch.value = true;
+
+    // nextTick(() => keywordsInput.value.focus());
+}
+
+const closeModal = () => {
+    showingSearch.value = false;
+}
+
+const search = () => {
+    router.visit(route('posts.search', { fragment: form.keywords }));
+};
 </script>
 
 <template>
-    <Head title="New Post" />
+    <Head title="Recent Posts" />
 
     <PostsLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
             >
-                Creating New Post
+                Recent Posts
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div>
-                        <section>
-                            <form @submit.prevent="form.post(route('posts.store'))" class="space-y-6">
-                                <div>
-                                    <InputLabel for="title" value="Title" />
-                                    <TextInput
-                                        id="title"
-                                        type="text"
-                                        class="mt-1 block w-full"
-                                        v-model="form.title"
-                                        required
-                                        autocomplete="title"
-                                        autofocus
-                                    />
-                                    <InputError class="mt-2" :message="form.errors.title" />
-                                </div>
+        <Paginator :first="first" :rows="10" :totalRecords="links.total"
+                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                   @page="(e) => router.visit(route('posts.search', { fragment: form.keywords, page: e.page + 1 }))">
+            <template #start>
+                <Link :href="route('posts.search', { fragment: form.keywords })" class="font-semibold">
+                    Search Results
+                </Link>
+            </template>
+            <template #end>
+                <div>
+                    <TextInput
+                        id="keywords"
+                        ref="keywordsInput"
+                        v-model="form.keywords"
+                        type="keywords"
+                        class="mr-1 px-1 pb-1 block w-1/2 inline-flex border"
+                        placeholder="keywords"
+                        @keyup.enter="search"
+                    />
+                    <Link href="#search"
+                          @click.prevent="search"
+                          class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                      font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                      focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                      focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+                </div>
+            </template>
+        </Paginator>
 
-                                <div>
-                                    <InputLabel for="content" value="Content" />
-                                    <textarea
-                                        id="content"
-                                        class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mt-1 block w-full"
-                                        v-model="form.content"
-                                        required
-                                        autocomplete="content"
-                                        rows="7"
-                                    ></textarea>
-                                    <InputError class="mt-2" :message="form.errors.content" />
-                                </div>
+        <template v-for="post in posts">
+            <div class="pt-12">
+                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                    <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
 
-                                <div class="flex items-center gap-4">
-                                    <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                        <div class="divide-y-4">
+                            <h2 class="text-xl bg-white leading-tight">
+                                <Link :href="route('posts.user', { name: post.user.name.split(' ').join('_') })"
+                                      class="font-semibold">{{ post.user.name }}</Link>
+                                {{ post.title }}
+                            </h2>
+                            <div class="text-sm">
+                                {{ post.created_at_formatted }}
+                            </div>
+                        </div>
 
-                                    <Transition
-                                        enter-active-class="transition ease-in-out"
-                                        enter-from-class="opacity-0"
-                                        leave-active-class="transition ease-in-out"
-                                        leave-to-class="opacity-0"
-                                    >
-                                        <p
-                                            v-if="form.recentlySuccessful"
-                                            class="text-sm text-gray-600"
-                                        >
-                                            Saved.
-                                        </p>
-                                    </Transition>
-                                </div>
-                            </form>
-                        </section>
+                        <div v-html="post.escaped_content"></div>
+
+                        <div>
+                            <span v-for="category in post.categories"
+                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">
+                                <Link :href="route('category.show', { category: category.name.split(' ').join('').toLowerCase() })"
+                                      class="font-semibold">{{ category.name }}</Link></span>
+                        </div>
+
+                        <div>
+                            <Link :href="route('posts.show', { post: post.id })"
+                               class="underline underline-offset-2 hover:text-sky-500">{{ post.comments.length }} comments</Link>
+                        </div>
+
+                        <div v-if="auth_user">
+                            <Link v-if="post.is_author" :href="route('posts.edit', { post: post.id })"
+                               class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</Link>
+
+                            <Link v-if="post.is_author" href="#destroy" class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                               @click.prevent="router.delete(route('posts.destroy', { post: post.id }))">Delete</Link>
+
+                            <Link :href="route('posts.comments.create', { post: post.id })"
+                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Comment</Link>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
+        <template v-if="!posts.length">
+            <div class="py-12">
+                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                    <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
+
+                        <div class="divide-y-4">
+                            <h2 class="text-xl bg-white leading-tight">
+                                No posts yet.
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <Paginator v-if="posts.length" :first="first" :rows="10" :totalRecords="links.total"
+                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                   @page="(e) => router.visit(route('posts.search', { fragment: form.keywords, page: e.page + 1 }))">
+            <template #start>
+                <Link :href="route('posts.search', { fragment: form.keywords })" class="font-semibold">
+                    Search Results
+                </Link>
+            </template>
+            <template #end>
+                <div>
+                    <TextInput
+                        id="keywords"
+                        ref="keywordsInput"
+                        v-model="form.keywords"
+                        type="keywords"
+                        class="mr-1 px-1 pb-1 block w-1/2 inline-flex border"
+                        placeholder="keywords"
+                        @keyup.enter="search"
+                    />
+                    <Link href="#search"
+                          @click.prevent="search"
+                          class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
+                                      font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
+                                      focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
+                                      focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Search</Link>
+                </div>
+            </template>
+        </Paginator>
+
     </PostsLayout>
 </template>
+<style>
+
+.p-paginator-page {
+    @apply w-10;
+    @apply h-10;
+    @apply bg-indigo-100;
+    @apply transition-colors;
+    @apply duration-150;
+    @apply text-indigo-600;
+    @apply rounded-full;
+    @apply font-semibold;
+    @apply text-sm;
+    @apply hover:bg-indigo-100;
+}
+
+.p-paginator-page-selected {
+    @apply w-10;
+    @apply h-10;
+    @apply rounded-full;
+    @apply bg-gray-800;
+    @apply border;
+    @apply border-transparent;
+    @apply font-semibold;
+    @apply text-sm;
+    @apply text-white;
+    @apply uppercase;
+    @apply tracking-widest;
+    @apply hover:bg-gray-700;
+    @apply focus:bg-gray-700;
+    @apply active:bg-gray-900;
+    @apply focus:outline-none;
+    @apply focus:ring-2;
+    @apply focus:ring-indigo-500;
+    @apply focus:ring-offset-2;
+    @apply transition;
+    @apply ease-in-out;
+    @apply duration-150;
+}
+
+.p-paginator-content .p-disabled {
+    @apply w-10;
+    @apply h-10;
+    @apply text-indigo-600;
+    @apply transition-colors;
+    @apply duration-150;
+    @apply bg-white;
+    @apply rounded-full;
+    @apply hover:bg-indigo-100;
+}
+
+</style>

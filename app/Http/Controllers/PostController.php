@@ -27,7 +27,6 @@ class PostController extends Controller
         $posts = $postsForLinks
             ->load('comments', 'user', 'categories');
 
-        $posts_count = count($posts);
         foreach ($posts as $i => $post) {
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
@@ -205,7 +204,6 @@ class PostController extends Controller
         $posts = $posts_for_links
             ->load('comments', 'user', 'categories');
 
-        $posts_count = count($posts);
         foreach ($posts as $i => $post) {
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
@@ -217,7 +215,7 @@ class PostController extends Controller
         $links = $posts_for_links->toArray();
         unset($links['data'], $links['links']);
 
-        return Inertia::render('Posts/Index', compact('auth_user', 'posts', 'links'));
+        return Inertia::render('Posts/Search', compact('auth_user', 'posts', 'links', 'post_fragment'));
     }
 
     public function user(?string $user_name)
@@ -232,7 +230,6 @@ class PostController extends Controller
         $posts = $postsForLinks
             ->load('comments', 'user', 'categories');
 
-        $posts_count = count($posts);
         foreach ($posts as $i => $post) {
             $post->created_at_formatted = $post->getCreatedAtFormatted();
             $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
