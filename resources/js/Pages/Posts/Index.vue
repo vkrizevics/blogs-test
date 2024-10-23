@@ -1,14 +1,10 @@
 <script setup>
 import Paginator from 'primevue/paginator';
+import Posts from '@/Pages/Posts/Partials/Posts.vue';
 import PostsLayout from '@/Layouts/PostsLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import {nextTick, ref, useTemplateRef} from 'vue';
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { ref } from 'vue';
 
 const props = defineProps({
     auth_user: {
@@ -30,19 +26,6 @@ const first = ref(props.links.from - 1);
 const form = useForm({
     keywords: props.post_fragment ?? ''
 });
-
-const showingSearch = ref(false);
-const keywordsInput = ref(null);
-
-const showSearch = () => {
-    showingSearch.value = true;
-
-    // nextTick(() => keywordsInput.value.focus());
-}
-
-const closeModal = () => {
-    showingSearch.value = false;
-}
 
 const search = () => {
     router.visit(route('posts.search', { fragment: form.keywords }));
@@ -90,74 +73,7 @@ const search = () => {
             </template>
         </Paginator>
 
-        <template v-for="post in posts">
-            <div class="pt-12">
-                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
-
-                        <div class="divide-y-4">
-                            <h2 class="text-xl bg-white leading-tight">
-                                <Link :href="route('posts.user', { name: post.user.name.split(' ').join('_') })"
-                                      class="font-semibold">{{ post.user.name }}</Link>
-                                {{ post.title }}
-                            </h2>
-                            <div class="text-sm">
-                                {{ post.created_at_formatted }}
-                            </div>
-                        </div>
-
-                        <div v-html="post.escaped_content"></div>
-
-                        <div>
-                            <span v-for="category in post.categories"
-                                  class="bg-indigo-600 text-indigo-100 text-sm font-medium me-2 px-2.5 py-1 rounded-full">
-                                <Link :href="route('category.show', { category: category.name.split(' ').join('').toLowerCase() })"
-                                      class="font-semibold">{{ category.name }}</Link></span>
-                        </div>
-
-                        <div>
-                            <Link :href="route('posts.show', { post: post.id })"
-                               class="underline underline-offset-2 hover:text-sky-500">{{ post.comments.length }} comments</Link>
-                        </div>
-
-                        <div v-if="auth_user">
-                            <Link v-if="post.is_author" :href="route('posts.edit', { post: post.id })"
-                               class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Edit</Link>
-
-                            <Link v-if="post.is_author" href="#destroy" class="inline-flex items-center mr-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                               @click.prevent="router.delete(route('posts.destroy', { post: post.id }))">Delete</Link>
-
-                            <Link :href="route('posts.comments.create', { post: post.id })"
-                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md
-                                  font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700
-                                  focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2
-                                  focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Comment</Link>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template v-if="!posts.length">
-            <div class="py-12">
-                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
-
-                        <div class="divide-y-4">
-                            <h2 class="text-xl bg-white leading-tight">
-                                No posts yet.
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
+        <Posts :posts="posts" :auth_user="auth_user" />
 
         <Paginator v-if="posts.length" :first="first" :rows="10" :totalRecords="links.total"
                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
