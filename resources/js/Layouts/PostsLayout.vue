@@ -60,15 +60,15 @@ props.canRegister = true;
                                 My Blog
                             </Link>
 
-                            <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                            <div class="hidden sm:flex sm:items-center">
                                 <!-- Settings Dropdown -->
-                                <div class="relative ms-3">
+                                <div class="relative">
                                     <Dropdown align="right" width="48">
                                         <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 leading-4 transition duration-150 ease-in-out"
                                                 >
                                                     {{ $page.props.auth.user.name }}
 
@@ -89,16 +89,10 @@ props.canRegister = true;
                                         </template>
 
                                         <template #content>
-                                            <DropdownLink
-                                                :href="route('profile.edit')"
-                                            >
+                                            <DropdownLink :href="route('profile.edit')" class="dropdown-link">
                                                 Profile
                                             </DropdownLink>
-                                            <DropdownLink
-                                                :href="route('logout')"
-                                                method="post"
-                                                as="button"
-                                            >
+                                            <DropdownLink :href="route('logout')" method="post" as="button" class="dropdown-link">
                                                 Log Out
                                             </DropdownLink>
                                         </template>
@@ -134,3 +128,10 @@ props.canRegister = true;
         </div>
     </div>
 </template>
+
+<style>
+    .dropdown-link {
+        @apply text-base;
+        @apply text-black;
+    }
+</style>
