@@ -9,15 +9,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [PostController::class, 'index'])->name('index');
-// Route::get('/', function () {
-//    return Inertia::render('Welcome', [
-//        'canLogin' => Route::has('login'),
-//        'canRegister' => Route::has('register'),
-//        'laravelVersion' => Application::VERSION,
-//        'phpVersion' => PHP_VERSION,
-//    ]);
-//}
-//);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -29,12 +20,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('posts', PostController::class)->middleware(['auth', 'verified'])->except(['index', 'show']);
+Route::resource('posts', PostController::class)->only('index', 'show');
+Route::resource('posts', PostController::class)->only('create', 'store')
+    ->middleware(['auth', 'verified']);
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+Route::resource('posts', PostController::class)->only('edit', 'update')
+    ->middleware(['auth', 'verified', 'can:update,post']);
+
+Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy')
+    ->middleware(['auth', 'verified', 'can:delete,post']);
+
 Route::get('posts/search/{fragment}', [PostController::class, 'search'])->name('posts.search');
-
 Route::get('/user/{name}', [PostController::class, 'user'])->name('posts.user');
 
 Route::get('category/{category}', [CategoryController::class, 'show'])->name('category.show');

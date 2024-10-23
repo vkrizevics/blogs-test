@@ -102,8 +102,12 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(?Post $post)
     {
+        if (!$post) { // after deletion
+            return redirect('index');
+        }
+
         $post->load(['comments', 'comments.user', 'user', 'categories']);
 
         $post->created_at_formatted = $post->getCreatedAtFormatted();
@@ -184,19 +188,20 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, Request $request)
     {
         $post->delete();
 
-        return redirect('posts');
+        return redirect($request->previous());
     }
 
     public function search(?string $post_fragment)
     {
+        $post_fragment_clean = strip_tags($post_fragment);
         $posts_for_links = Post::where(
                 DB::raw('CONCAT(title, " ", content)'),
                 'like',
-                '%' . str_replace(' ', '%', addslashes($post_fragment)) . '%'
+                '%' . str_replace(' ', '%', addslashes($post_fragment_clean)) . '%'
             )
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -215,7 +220,9 @@ class PostController extends Controller
         $links = $posts_for_links->toArray();
         unset($links['data'], $links['links']);
 
-        return Inertia::render('Posts/Search', compact('auth_user', 'posts', 'links', 'post_fragment'));
+        return Inertia::render('Posts/Search', compact('auth_user', 'posts', 'links') + [
+                'post_fragment' => $post_fragment_clean
+            ]);
     }
 
     public function user(?string $user_name)
