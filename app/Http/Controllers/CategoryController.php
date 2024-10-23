@@ -73,27 +73,34 @@ class CategoryController extends Controller
      */
     public function show(?string $category_name)
     {
-        $category = Category::where('name', str_replace(' ', '', $category_name))
+        $category_name_clean = str_replace(' ', '', strip_tags($category_name));
+        $category = Category::where('name', $category_name_clean)
             ->first();
 
-        $postsForLinks = $category->posts()
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        $posts = $postsForLinks
-            ->load('comments', 'user', 'categories');
-
-        $posts_count = count($posts);
-        foreach ($posts as $i => $post) {
-            $post->created_at_formatted = $post->getCreatedAtFormatted();
-            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
-
-            $post->is_author = static::isAuthor($post);
-        }
-
         $auth_user = Auth::check();
-        $links = $postsForLinks->toArray();
-        unset($links['data'], $links['links']);
+
+        if ($category) {
+            $postsForLinks = $category->posts()
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            $posts = $postsForLinks
+                ->load('comments', 'user', 'categories');
+
+            foreach ($posts as $i => $post) {
+                $post->created_at_formatted = $post->getCreatedAtFormatted();
+                $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+                $post->is_author = static::isAuthor($post);
+            }
+
+            $links = $postsForLinks->toArray();
+            unset($links['data'], $links['links']);
+        } else {
+            $posts = [];
+            $links = (object)[];
+            $category = (object)['name' => $category_name_clean];
+        }
 
 
         return Inertia::render('Posts/Category', compact('auth_user', 'posts', 'links', 'category'));
