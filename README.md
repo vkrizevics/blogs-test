@@ -25,7 +25,7 @@ System's homepage shows recent posts from all the bloggers. By clicking blogger 
 
 On the post page you can click the name of the author of the comment to see that person's blog.
 
-You can always post something new or edit old posts in "My blog" (link is located in top-right corner of all pages).
+You can always post something new or edit old posts in "My blog" (link is located in top-right corner of all pages for authenticated users).
 
 You can assign categories to your new or existing posts using categories autocomplete in post editing form.
 
