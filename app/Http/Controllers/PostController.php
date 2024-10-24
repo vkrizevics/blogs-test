@@ -96,7 +96,7 @@ class PostController extends Controller
 
         $post->categories()->sync($category_ids);
 
-        return redirect('posts/' . (int)$post->id);
+        return redirect()->route('posts.show', ['post' => (int)$post->id]);
     }
 
     /**
@@ -182,7 +182,7 @@ class PostController extends Controller
 
         $post->categories()->sync($category_ids);
 
-        return redirect('posts/' . (int)$post->id);
+        return redirect()->route('posts.show', ['post' => (int)$post->id]);
     }
 
     /**
@@ -194,7 +194,7 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect('user/' . str_replace(' ', '_', strip_tags($user_name)));
+        return redirect()->route('posts.user', ['name' => str_replace(' ', '_', strip_tags($user_name))]);
     }
 
     public function search(?string $post_fragment)

@@ -44,6 +44,14 @@ Route::get('/user/{name}', [PostController::class, 'user'])->name('posts.user');
 
 Route::get('category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
+Route::get('/posts/{post}/comments', [PostController::class, 'index'])->name('posts.comments.index');
+
+Route::get('/posts/{post}/comments/create', [PostController::class, 'create'])->name('posts.comments.create')
+    ->middleware(['auth', 'verified']);
+
+Route::post('/posts/{post}/comments', [PostController::class, 'store'])->name('posts.comments.store')
+    ->middleware(['auth', 'verified']);
+
 Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
 
 Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
