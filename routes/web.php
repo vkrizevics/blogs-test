@@ -39,22 +39,26 @@ Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.up
 Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy')
     ->middleware(['auth', 'verified', 'can:delete,post']);
 
+
 Route::get('/posts/search/{fragment}', [PostController::class, 'search'])->name('posts.search');
+
 Route::get('/user/{name}', [PostController::class, 'user'])->name('posts.user');
 
 Route::get('category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
-Route::get('/posts/{post}/comments', [PostController::class, 'index'])->name('posts.comments.index');
 
-Route::get('/posts/{post}/comments/create', [PostController::class, 'create'])->name('posts.comments.create')
+Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('posts.comments.index');
+
+Route::get('/posts/{post}/comments/create', [CommentController::class, 'create'])->name('posts.comments.create')
     ->middleware(['auth', 'verified']);
 
-Route::post('/posts/{post}/comments', [PostController::class, 'store'])->name('posts.comments.store')
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store')
     ->middleware(['auth', 'verified']);
 
-Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')
+    ->middleware(['auth', 'verified', 'can:delete,comment']);
 
-Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
+//Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
 Route::get('/categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
 require __DIR__.'/auth.php';
