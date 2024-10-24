@@ -58,7 +58,7 @@ Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')
     ->middleware(['auth', 'verified', 'can:delete,comment']);
 
-//Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
 Route::get('/categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
 require __DIR__.'/auth.php';
