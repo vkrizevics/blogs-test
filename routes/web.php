@@ -20,17 +20,26 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('posts', PostController::class)->only('index', 'show');
-Route::resource('posts', PostController::class)->only('create', 'store')
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+
+Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create')
     ->middleware(['auth', 'verified']);
 
-Route::resource('posts', PostController::class)->only('edit', 'update')
+Route::post('/posts', [PostController::class, 'store'])->name('posts.store')
+    ->middleware(['auth', 'verified']);
+
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
+Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit')
+    ->middleware(['auth', 'verified', 'can:update,post']);
+
+Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update')
     ->middleware(['auth', 'verified', 'can:update,post']);
 
 Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy')
     ->middleware(['auth', 'verified', 'can:delete,post']);
 
-Route::get('posts/search/{fragment}', [PostController::class, 'search'])->name('posts.search');
+Route::get('/posts/search/{fragment}', [PostController::class, 'search'])->name('posts.search');
 Route::get('/user/{name}', [PostController::class, 'user'])->name('posts.user');
 
 Route::get('category/{category}', [CategoryController::class, 'show'])->name('category.show');
@@ -38,6 +47,6 @@ Route::get('category/{category}', [CategoryController::class, 'show'])->name('ca
 Route::resource('posts.comments', CommentController::class)->middleware(['auth', 'verified'])->shallow()->except(['show']);
 
 Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified'])->except(['show']);
-Route::get('categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
+Route::get('/categories/search/{fragment}', [CategoryController::class, 'search'])->middleware(['auth', 'verified'])->name('categories.search');
 
 require __DIR__.'/auth.php';

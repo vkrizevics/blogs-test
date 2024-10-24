@@ -190,9 +190,11 @@ class PostController extends Controller
      */
     public function destroy(Post $post, Request $request)
     {
+        $user_name = $post->user->name;
+
         $post->delete();
 
-        return redirect($request->previous());
+        return redirect('user/' . str_replace(' ', '_', strip_tags($user_name)));
     }
 
     public function search(?string $post_fragment)
@@ -230,25 +232,34 @@ class PostController extends Controller
         $user = User::where('name', str_replace('_', ' ', $user_name))
             ->first();
 
-        $postsForLinks = $user->posts()
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $auth_user = Auth::check();
+        if ($user) {
+            $blog_is_author = $auth_user && $user->id === Auth::id();
 
-        $posts = $postsForLinks
-            ->load('comments', 'user', 'categories');
+            $postsForLinks = $user->posts()
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
 
-        foreach ($posts as $i => $post) {
-            $post->created_at_formatted = $post->getCreatedAtFormatted();
-            $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+            $posts = $postsForLinks
+                ->load('comments', 'user', 'categories');
 
-            $post->is_author = static::isAuthor($post);
+            foreach ($posts as $i => $post) {
+                $post->created_at_formatted = $post->getCreatedAtFormatted();
+                $post->escaped_content = nl2br(htmlspecialchars($post->content), false);
+
+                $post->is_author = static::isAuthor($post);
+            }
+
+            $links = $postsForLinks->toArray();
+            unset($links['data'], $links['links']);
+        } else {
+            $blog_is_author = false;
+            $posts = [];
+            $links = (object)[];
+            $user = ['name' => ''];
         }
 
-        $auth_user = Auth::check();
-        $links = $postsForLinks->toArray();
-        unset($links['data'], $links['links']);
 
-
-        return Inertia::render('Posts/User', compact('auth_user', 'posts', 'links', 'user'));
+        return Inertia::render('Posts/User', compact('auth_user', 'blog_is_author', 'posts', 'links', 'user'));
     }
 }
