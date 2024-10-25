@@ -20,7 +20,7 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    // Authentication without errors due to unsupported HTTP methods before edit actions
+    // Authentication without errors due to unsupported HTTP methods before update actions
 
     Route::patch('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login-on-patch');
