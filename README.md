@@ -19,7 +19,7 @@
 
 Herd will serve sample system at http://blogs-test.test
 
-You can use emails from the users table just seed to login into blogger's accounts using password "password". Or you can register new accounts. No e-mail verification required. 
+You can use emails from the users table just seeded to login into blogger's accounts using password "password". Or you can register new accounts. No e-mail verification required. 
 
 System's homepage shows recent posts from all the bloggers. By clicking blogger name near the title of the post you can get to his / her blog.
 
