@@ -20,6 +20,16 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
+    // Authentication without errors due to unsupported HTTP methods before update actions
+
+    Route::patch('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login-on-patch');
+
+    // Authentication without errors due to unsupported HTTP methods before destroy actions
+
+    Route::delete('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login-on-delete');
+
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
