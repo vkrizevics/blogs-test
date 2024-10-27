@@ -21,7 +21,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $postsForLinks = Post::orderBy('created_at', 'desc')
+        $postsForLinks = Post::orderBy('id', 'desc')
             ->paginate(10);
 
         $posts = $postsForLinks
@@ -205,7 +205,7 @@ class PostController extends Controller
                 'like',
                 '%' . str_replace(' ', '%', addslashes($post_fragment_clean)) . '%'
             )
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         $posts = $posts_for_links
@@ -237,7 +237,7 @@ class PostController extends Controller
         $blog_is_author = $auth_user && $user->id === Auth::id();
 
         $postsForLinks = $user->posts()
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         $posts = $postsForLinks
