@@ -10,6 +10,8 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    protected const POSTS_PER_PAGE = 10;
+
     use IsAuthorTrait;
     /**
      * Get autocompletion variants for a category fragment
@@ -64,7 +66,7 @@ class CategoryController extends Controller
         if ($category) {
             $postsForLinks = $category->posts()
                 ->orderBy('id', 'desc')
-                ->paginate(10);
+                ->paginate(static::POSTS_PER_PAGE);
 
             $posts = $postsForLinks
                 ->load('comments', 'user', 'categories');

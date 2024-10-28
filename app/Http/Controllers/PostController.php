@@ -15,6 +15,8 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
+    protected const POSTS_PER_PAGE = 10;
+
     use IsAuthorTrait;
     /**
      * Display a listing of the resource.
@@ -22,7 +24,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $postsForLinks = Post::orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate(static::POSTS_PER_PAGE);
 
         $posts = $postsForLinks
             ->load('comments', 'user', 'categories');
@@ -206,7 +208,7 @@ class PostController extends Controller
                 '%' . str_replace(' ', '%', addslashes($post_fragment_clean)) . '%'
             )
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate(static::POSTS_PER_PAGE);
 
         $posts = $posts_for_links
             ->load('comments', 'user', 'categories');
@@ -238,7 +240,7 @@ class PostController extends Controller
 
         $postsForLinks = $user->posts()
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate(static::POSTS_PER_PAGE);
 
         $posts = $postsForLinks
             ->load('comments', 'user', 'categories');
